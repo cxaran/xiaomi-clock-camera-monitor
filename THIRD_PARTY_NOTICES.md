@@ -9,6 +9,10 @@
 - Android SDK, sus herramientas, imágenes de sistema y NDK se obtienen de Google
   bajo sus respectivas condiciones. Los archivos descargados quedan fuera del
   repositorio. [Herramientas SDK](https://developer.android.com/tools).
+- El ZIP del instalador Windows incluye ADB y sus DLL de platform-tools 37.0.1,
+  extraídos del archivo fijado en `tools/installer-dependencies.json`. Incluye
+  `platform-tools/NOTICE.txt` con los avisos y licencias correspondientes. No
+  incorpora Fastboot, controladores, otras herramientas SDK ni claves ADB.
 - Eclipse ECJ se descarga de Maven Central y pertenece al proyecto Eclipse JDT.
   [Código y licencias de JDT](https://github.com/eclipse-jdt/eclipse.jdt.core).
 - Temurin se descarga de Adoptium. [OpenJDK/Temurin](https://adoptium.net/).

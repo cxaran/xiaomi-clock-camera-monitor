@@ -1,9 +1,11 @@
 # Instalar una release en otro Xiaomi X04G
 
-Guía de **v0.1.0-rc.1**, versión preliminar. El APK de esta release usa
-`versionName=0.1.0-rc.1` y `versionCode=2`. La compatibilidad está limitada al
+Guía de **v0.1.0-rc.2**, versión preliminar. El APK de esta release usa
+`versionName=0.1.0-rc.2` y `versionCode=3`. La compatibilidad está limitada al
 launcher indicado en esta guía; no es una instalación universal para cualquier
 firmware X04G.
+
+En Windows puedes usar el [instalador portable](https://github.com/cxaran/xiaomi-clock-camera-monitor/blob/v0.1.0-rc.2/installer/README.md), que verifica la compatibilidad, instala la pareja y configura el UID automáticamente. Los pasos siguientes son la alternativa manual.
 
 La instalación utiliza **dos archivos de la misma release**:
 `x04g-home.apk` y `x04g-camera-carousel-disabled.zip`. El módulo comprueba el
@@ -19,11 +21,11 @@ Instalarlo solo no añade Cámaras al carrusel. El ZIP se entrega deliberadament
 Necesitas ADB USB autenticado, acceso `su`, Magisk **26+ con Zygisk habilitado**
 y el sistema original arrancado y configurado con Google Home. La ruta de
 arranque documentada usa Magisk 26.1. Si Magisk ofrece completar/reparar su
-entorno, sigue [la preparación de Magisk](https://github.com/cxaran/xiaomi-clock-camera-monitor/blob/v0.1.0-rc.1/docs/adb.md#5-preparar-magisk-para-el-módulo-del-carrusel).
+entorno, sigue [la preparación de Magisk](https://github.com/cxaran/xiaomi-clock-camera-monitor/blob/v0.1.0-rc.2/docs/adb.md#5-preparar-magisk-para-el-módulo-del-carrusel).
 Instalar únicamente el APK del manager no proporciona root ni Zygisk.
 
 Si tu reloj sigue de fábrica, completa antes la [guía de respaldo, desbloqueo
-y ADB](https://github.com/cxaran/xiaomi-clock-camera-monitor/blob/v0.1.0-rc.1/docs/adb.md). Construye BOOT con el respaldo y la clave pública de **tu propia
+y ADB](https://github.com/cxaran/xiaomi-clock-camera-monitor/blob/v0.1.0-rc.2/docs/adb.md). Construye BOOT con el respaldo y la clave pública de **tu propia
 unidad**. No hay un BOOT universal para descargar. Esa ruta requiere un
 restablecimiento de fábrica y volver a configurar las cuentas, Wi-Fi y Google
 Home. La instalación del APK y el módulo, una vez preparado ADB/Magisk, no
@@ -63,7 +65,7 @@ reconocida de **Shell**. Comprueba estos valores antes de instalar:
 Un launcher actualizado en `/data/app`, otro hash o una versión distinta
 necesitan adaptación de la integración. No cambies un pin para saltarte la
 comprobación. El reloj, sus menús y sus funciones OEM deben funcionar antes de
-añadir la extensión. Consulta [la arquitectura y los requisitos](https://github.com/cxaran/xiaomi-clock-camera-monitor/blob/v0.1.0-rc.1/docs/carousel.md).
+añadir la extensión. Consulta [la arquitectura y los requisitos](https://github.com/cxaran/xiaomi-clock-camera-monitor/blob/v0.1.0-rc.2/docs/carousel.md).
 
 ## 2. Descargar y verificar la pareja
 
@@ -214,12 +216,12 @@ En **Cámaras**, mantén pulsado y abre **Administrar**. Añade tus cámaras con
 sus direcciones y cuentas RTSP locales, prueba y guarda. No hay cámaras,
 contraseñas ni configuración de otro usuario precargadas. El Portón opcional
 tampoco incluye dispositivo, clave LAN ni señal RF: sin configuración no puede
-accionar nada. Consulta [uso y configuración](https://github.com/cxaran/xiaomi-clock-camera-monitor/blob/v0.1.0-rc.1/docs/app.md).
+accionar nada. Consulta [uso y configuración](https://github.com/cxaran/xiaomi-clock-camera-monitor/blob/v0.1.0-rc.2/docs/app.md).
 
 Configura las cámaras desde la página integrada: `PreviewActivity` ejecutada
 mediante ADB tiene un UID/almacén distinto y no configura el carrusel. Comprueba
 imagen visible, zoom, selección, sonido y cierre del vídeo al volver al reloj
-con [la lista de verificación](https://github.com/cxaran/xiaomi-clock-camera-monitor/blob/v0.1.0-rc.1/docs/verification.md). Una conexión o un log de éxito
+con [la lista de verificación](https://github.com/cxaran/xiaomi-clock-camera-monitor/blob/v0.1.0-rc.2/docs/verification.md). Una conexión o un log de éxito
 no acreditan por sí solos imagen, sonido ni estabilidad prolongada.
 
 ## Retirar o volver a la pareja anterior
@@ -243,6 +245,6 @@ deshabilitada y revisa la migración antes de desinstalar o borrar datos. La
 desactivación del módulo ya devuelve el carrusel OEM sin hacer ese cambio.
 
 Si Android no arranca o no tienes ADB, usa la [vía de recuperación y el respaldo
-propio](https://github.com/cxaran/xiaomi-clock-camera-monitor/blob/v0.1.0-rc.1/docs/adb.md#retirada-y-restauración). La reversión de las páginas no requiere
+propio](https://github.com/cxaran/xiaomi-clock-camera-monitor/blob/v0.1.0-rc.2/docs/adb.md#retirada-y-restauración). La reversión de las páginas no requiere
 restaurar BOOT; restaurar el arranque es una operación distinta que exige sus
 lecturas de comprobación. No vuelvas a bloquear el arranque con BOOT modificado.

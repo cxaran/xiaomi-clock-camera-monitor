@@ -5,6 +5,18 @@ serial del reloj; los ejemplos usan `adb -P 5142 -s SERIAL_DEL_RELOJ`.
 
 ## Compilación sin dispositivo
 
+Pruebas del instalador en Windows, sin ADB ni USB reales:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File installer/tests/Test-X04GInstaller.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File installer/tests/Test-ProcessRunner.ps1
+```
+
+El primer comando usa un transporte cerrado simulado; el segundo ejecuta un
+proceso local inerte para comprobar argumentos, UTF-8 y timeout. No prueban una
+instalación física. El paquete se construye con `python scripts/package_installer.py`
+desde un checkout limpio y la pareja pública compilada y verificada.
+
 En Windows:
 
 ```powershell

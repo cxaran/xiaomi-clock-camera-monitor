@@ -21,20 +21,27 @@ opcional de portón, sin ningún dispositivo ni señal preconfigurados.
 Capturas reales de 800 × 480. Las vistas de cámaras están vacías, sin vídeo
 privado ni datos de acceso. [Más pantallas y origen de cada captura](docs/screenshots/README.md).
 
-## APK y módulo para descargar
+## Instalador para Windows y descargas
 
-**RC1: no usar para nuevas instalaciones.** Se detectó una comprobación de
-versión antigua en el puente del módulo. La corrección y el instalador de
-Windows están en preparación.
+Descarga el [instalador portable de v0.1.0-rc.2](https://github.com/cxaran/xiaomi-clock-camera-monitor/releases/download/v0.1.0-rc.2/x04g-windows-installer-0.1.0-rc.2.zip).
+Incluye ADB para Windows, el APK y su módulo. Extrae todo el ZIP y, con el X04G
+conectado por USB y arrancado normalmente, abre **Check-X04G.cmd** y después
+**Install-X04G.cmd**. Comprueba la compatibilidad, obtiene el UID del reloj,
+instala la pareja y verifica el reinicio y la integración. **Disable-X04G.cmd**
+permite desactivar la extensión. [Instrucciones del instalador](installer/README.md).
 
-La [release v0.1.0-rc.1](https://github.com/cxaran/xiaomi-clock-camera-monitor/releases/tag/v0.1.0-rc.1)
-incluye una pareja APK/módulo compilada, sus hashes y la
-[guía para instalarla en otro X04G](docs/release-install.md).
-Es una versión preliminar para el launcher exacto documentado; necesita ADB,
-Magisk y Zygisk preparados. El módulo se activa con el UID de cada reloj.
-No incluye BOOT, fuentes OEM, cuentas ni configuración de cámaras o portón.
+Necesita un X04G con ADB USB autenticado, root y Magisk/Zygisk ya preparados;
+para una unidad de fábrica completa antes [la preparación y el respaldo](docs/adb.md).
+El instalador no automatiza el desbloqueo ni el borrado de datos. La compatibilidad
+se limita al launcher exacto documentado y la versión sigue siendo preliminar.
 
-## Instalación en el reloj
+La [release](https://github.com/cxaran/xiaomi-clock-camera-monitor/releases/tag/v0.1.0-rc.2)
+también ofrece los binarios individuales, hashes y
+[la instalación manual](docs/release-install.md). RC2 corrige la comprobación de
+versión del APK que impedía activar el puente de RC1. No incluye BOOT, fuentes
+OEM, cuentas ni configuración de cámaras o portón.
+
+## Compilar e instalar desde las fuentes
 
 1. Comprueba el modelo, versión y compatibilidad en [ADB y arranque](docs/adb.md).
 2. Obtén un respaldo de tu propia unidad y prepara el arranque con tu clave pública
@@ -99,6 +106,7 @@ hardware. [Capturas de la integración](docs/screenshots/README.md).
 | `tools/boot/` | Preparación del arranque y helper USB ADB |
 | `emulator/` | Composición, arranque y controles del sistema virtual |
 | `scripts/` | Herramientas fijadas, compilación y auditoría del paquete |
+| `installer/` | Instalador Windows, comprobación, UID automático y pruebas aisladas |
 | `docs/` | Instrucciones de instalación, uso y desarrollo |
 
 No se incluyen contraseñas, claves ADB, cuentas, SSID, códigos RF ni imágenes de
