@@ -10,7 +10,22 @@ la red local. Las cámaras necesitan una cuenta RTSP propia; la cuenta de la app
 del fabricante puede ser distinta. El paquete también conserva el control LAN
 opcional de portón, sin ningún dispositivo ni señal preconfigurados.
 
+## Así se ve
+
+| Reloj original · X04G físico | Página de cámaras · emulador OEM |
+| --- | --- |
+| ![Reloj original y los indicadores del carrusel](docs/screenshots/oem-clock.png) | ![Página de cámaras lista para añadir una cámara](docs/screenshots/camera-page.png) |
+| **Selector por pulsación prolongada · emulador OEM** | **Editor y teclado táctil · emulador OEM** |
+| ![Selector de cámaras con acceso a Administrar](docs/screenshots/camera-selector.png) | ![Editor de cámaras con teclado en pantalla](docs/screenshots/camera-keyboard.png) |
+
+Capturas reales de 800 × 480. Las vistas de cámaras están vacías, sin vídeo
+privado ni datos de acceso. [Más pantallas y origen de cada captura](docs/screenshots/README.md).
+
 ## APK y módulo para descargar
+
+**RC1: no usar para nuevas instalaciones.** Se detectó una comprobación de
+versión antigua en el puente del módulo. La corrección y el instalador de
+Windows están en preparación.
 
 La [release v0.1.0-rc.1](https://github.com/cxaran/xiaomi-clock-camera-monitor/releases/tag/v0.1.0-rc.1)
 incluye una pareja APK/módulo compilada, sus hashes y la
