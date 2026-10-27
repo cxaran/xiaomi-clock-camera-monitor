@@ -123,7 +123,7 @@ public final class WebAdminPanel extends PageView implements AutoCloseable {
     private void fail(){requestStop();step=Step.FAILED;render();}
     private TextView label(String text,float size,int color){return OemTheme.label(getContext(),text,size,color);}
     private Button button(String text){Button button=new Button(getContext());button.setText(text);button.setAllCaps(false);button.setTypeface(OemTheme.regular());button.setTextColor(OemTheme.ACTION);button.setBackground(OemTheme.surface(OemTheme.CONTROL,16));button.setMinHeight(0);button.setMinimumHeight(0);button.setMinWidth(0);button.setMinimumWidth(0);button.setPadding(8,0,8,0);return button;}
-    private Button icon(String glyph,String description){Button result=button(glyph);result.setTypeface(OemTheme.icons());result.setContentDescription(description);result.setTextColor(OemTheme.TEXT);return result;}
+    private Button icon(String glyph,String description){Button result=button("");result.setText(OemTheme.icon(glyph));result.setTypeface(OemTheme.icons());result.setContentDescription(description);result.setTextColor(OemTheme.TEXT);return result;}
     @Override protected void onActiveChanged(boolean value){if(!value){requestStop();step=Step.STOPPED;}render();}
     /** Programmatic close stops only; it never emits onBack or reopens anything. */
     @Override public void close(){requireMain();if(closed)return;closed=true;requestStop();super.release();clearSession();removeAllViews();}

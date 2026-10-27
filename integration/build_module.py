@@ -112,17 +112,23 @@ def main() -> None:
         native = stage / "armeabi-v7a.so"
         run([cxx, "-std=c++17", "-O2", "-Wall", "-Wextra", "-Werror", "-fPIC", "-shared", "-fno-exceptions",
              "-fno-rtti", "-fvisibility=hidden", "-ffunction-sections", "-fdata-sections", "-static-libstdc++",
+             "-fdebug-prefix-map=" + str(ROOT) + "=.",
+             "-fdebug-prefix-map=" + str(ndk) + "=android-ndk-r20b",
              "-Wl,--exclude-libs,ALL", "-Wl,--gc-sections", "-Wl,--no-undefined", "-Wl,--strip-all",
-             "-Wl,-z,relro,-z,now", "-I", stage, "-I", HERE, HERE / "zygisk_entry.cpp", "-llog", "-o", native])
+             "-Wl,-z,relro,-z,now", "-Wl,-soname,armeabi-v7a.so",
+             "-I", stage, "-I", HERE, HERE / "zygisk_entry.cpp", "-llog", "-o", "armeabi-v7a.so"], cwd=stage)
         data = native.read_bytes()
         if data[:6] != b"\x7fELF\x01\x01" or struct.unpack_from("<H", data, 18)[0] != 40:
             raise RuntimeError("ARM32_ELF_required")
+        if any(str(path).encode() in data for path in (ROOT, ndk, stage)):
+            raise RuntimeError("private_build_path_in_native")
         report = {"schema": "x04g.module.build.v1", "module_id": MODULE_ID,
                   "apk_sha256": sha(apk), "apk_bytes": apk.stat().st_size,
                   "apk_signer_sha256": signers[0].lower(), "payload_sha256": digest.hex(),
                   "payload_bytes": len(payload), "native_sha256": sha(native),
                   "stock_launcher_sha256": "1e5b52f356ef7c078619dc369cccf704060aca484754cef454fa921598ed8c21",
                   "initially_disabled": True, "uid_pin_included": False,
+                  "neutral_build_paths_verified": True,
                   "device_modified": False, "runtime_verified": False,
                   "sources": {p.relative_to(HERE).as_posix(): sha(p) for p in sources +
                               [HERE / "zygisk_entry.cpp", HERE / "uid_pin.hpp", HERE / "official/zygisk.hpp"]}}
@@ -145,6 +151,11 @@ ui_print "Installed disabled. Set verified runtime UID before activation."
             add(archive, "zygisk/armeabi-v7a.so", data, 0o755)
             add(archive, "payload.dex", payload)
             add(archive, "provenance.json", (json.dumps(report, indent=2) + "\n").encode())
+            add(archive, "licenses/project-MIT.txt", (ROOT / "LICENSE.md").read_bytes())
+            add(archive, "licenses/magisk-installer-GPL-3.0.txt", (HERE / "official/LICENSE-GPL-3.0.txt").read_bytes())
+            zygisk_notice = (HERE / "official/zygisk.hpp").read_bytes().split(b"*/", 1)[0] + b"*/\n"
+            add(archive, "licenses/zygisk-ISC.txt", zygisk_notice)
+            add(archive, "licenses/nayuki-qr-MIT.txt", (ROOT / "app/src/org/x04g/home/qr/LICENSE-MIT.txt").read_bytes())
         report["zip_sha256"] = sha(output)
         (out / "build-report.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
         print(json.dumps({"module": output.name, "sha256": sha(output), "initially_disabled": True}))

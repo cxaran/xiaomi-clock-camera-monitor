@@ -10,6 +10,15 @@ la red local. Las cámaras necesitan una cuenta RTSP propia; la cuenta de la app
 del fabricante puede ser distinta. El paquete también conserva el control LAN
 opcional de portón, sin ningún dispositivo ni señal preconfigurados.
 
+## APK y módulo para descargar
+
+La [release v0.1.0-rc.1](https://github.com/cxaran/xiaomi-clock-camera-monitor/releases/tag/v0.1.0-rc.1)
+incluye una pareja APK/módulo compilada, sus hashes y la
+[guía para instalarla en otro X04G](docs/release-install.md).
+Es una versión preliminar para el launcher exacto documentado; necesita ADB,
+Magisk y Zygisk preparados. El módulo se activa con el UID de cada reloj.
+No incluye BOOT, fuentes OEM, cuentas ni configuración de cámaras o portón.
+
 ## Instalación en el reloj
 
 1. Comprueba el modelo, versión y compatibilidad en [ADB y arranque](docs/adb.md).
@@ -20,15 +29,15 @@ opcional de portón, sin ningún dispositivo ni señal preconfigurados.
 
    ```powershell
    python scripts/fetch_tools.py
-   python scripts/build_app.py
+   python scripts/build_app.py --public-release
    ```
 
    El APK firmado queda en `build/app/x04g-home.apk`. Las herramientas se descargan
    con versiones y SHA-256 fijados. La clave de firma nueva se guarda sólo en
    `.local/signing/`; consérvala para poder actualizar tu instalación.
-4. Extrae las fuentes del launcher de tu respaldo para usar su tipografía e iconos.
-   Vuelve a compilar el APK después de extraerlas. Consulta
-   [integración y construcción del módulo](docs/carousel.md).
+4. La app lee la tipografía e iconos del launcher instalado en el propio reloj.
+   Si esos recursos no están disponibles, usa la tipografía del sistema e iconos
+   vectoriales propios. Consulta [integración y construcción del módulo](docs/carousel.md).
 5. Construye el puente, instala la pareja APK/módulo y fija el UID real del proceso
    OEM siguiendo esa guía. El módulo se genera deshabilitado y vinculado al hash
    y firma del APK construido. **Instalar sólo el APK no inserta páginas en el carrusel.**

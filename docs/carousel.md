@@ -41,7 +41,12 @@ La integración no modifica ni vuelve a firmar el APK OEM. Las fuentes e iconos 
 
 ## Recursos visuales locales
 
-Extrae sólo los recursos necesarios de tu propio APK:
+La app intenta leer las tres fuentes directamente del `AssetManager` del launcher
+instalado. La release pública no las empaqueta: `--public-release` excluye tanto
+`app/assets/fonts` como `.local/oem-fonts`, incluso si existen en el PC de quien
+compila. Si faltan en el reloj, usa sans-serif y seis iconos vectoriales originales.
+
+Para una compilación privada también puedes extraerlas de tu propio APK:
 
 ```powershell
 adb -P 5142 -s SERIAL_DEL_RELOJ pull /product/app/com.google.assistant.launcher/app.apk .local/launcher.apk
@@ -57,7 +62,7 @@ El extractor comprueba el hash y copia en `.local/oem-fonts`:
 | `assets/dart_app.assets/GoogleSans-Medium.nohints.ttf` | `GoogleSans-Medium.ttf` |
 | `assets/dart_app.assets/googlematerialicons/GoogleMaterialIcons-Regular.otf` | `GoogleMaterialIcons-Regular.otf` |
 
-No publiques tu APK de sistema, imágenes de particiones ni recursos propietarios extraídos. Sin esas fuentes el código dispone de fallback tipográfico, pero los glifos Material específicos pueden no aparecer; para reproducir la interfaz completa extrae las tres.
+No publiques tu APK de sistema, imágenes de particiones ni recursos propietarios extraídos.
 
 ## Compilar la pareja APK y módulo
 
@@ -68,6 +73,10 @@ La compilación del APK utiliza herramientas Windows. Desde PowerShell, ejecuta:
 ```powershell
 python scripts/build_app.py
 ```
+
+Para distribuir los binarios, usa `python scripts/build_app.py --public-release`.
+Después de construir el módulo, ejecuta `python scripts/verify_release.py` para
+comprobar la pareja, las licencias y la ausencia de recursos OEM y rutas personales.
 
 La compilación nativa del módulo se hace después en Linux x86_64 o WSL, desde la misma carpeta del repositorio, con Java 17/21 nativo y Android NDK **r20b/20.1.5948944**. Descomprime el [NDK Linux oficial](https://dl.google.com/android/repository/android-ndk-r20b-linux-x86_64.zip) en el filesystem Linux, por ejemplo `~/x04g-tools`; el sysroot contiene nombres que sólo se distinguen por mayúsculas y no debe extraerse en un NTFS que ignore esa diferencia. Su tamaño y SHA-256 están en `tools/integration-dependencies.json`. Comprueba el archivo descargado antes de extraerlo:
 

@@ -70,7 +70,7 @@ public final class AdminPanel extends PageView implements AutoCloseable {
     private void shell(String title){
         hideKeyboard();stopPreview();removeAllViews();clock.setGravity(Gravity.START|Gravity.TOP);put(clock,40,38,156,44,36);
         // Keep the entire 48dp close target outside the OEM-owned 36px right edge on X04G.
-        closeButton=button("\ue5cd");closeButton.setTypeface(OemTheme.icons());closeButton.setTextColor(OemTheme.TEXT);closeButton.setBackground(OemTheme.surface(OemTheme.CONTROL,1000));closeButton.setIncludeFontPadding(true);closeButton.setMinWidth(0);closeButton.setMinimumWidth(0);closeButton.setContentDescription("Cerrar administración");closeButton.setOnClickListener(v->close());put(closeButton,688,18,72,72,44);
+        closeButton=button("");closeButton.setText(OemTheme.icon("\ue5cd"));closeButton.setTypeface(OemTheme.icons());closeButton.setTextColor(OemTheme.TEXT);closeButton.setBackground(OemTheme.surface(OemTheme.CONTROL,1000));closeButton.setIncludeFontPadding(true);closeButton.setMinWidth(0);closeButton.setMinimumWidth(0);closeButton.setContentDescription("Cerrar administración");closeButton.setOnClickListener(v->close());put(closeButton,688,18,72,72,44);
         put(OemTheme.label(getContext(),title,32,OemTheme.TEXT),224,36,440,48,32);
         message=OemTheme.label(getContext(),"",21,OemTheme.SECONDARY);message.setMaxLines(2);put(message,28,432,744,44,21);clock.bringToFront();
     }

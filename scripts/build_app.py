@@ -1,5 +1,6 @@
 """Build the companion from source using API29 and a new local signing key."""
 from pathlib import Path
+import argparse
 import hashlib
 import json
 import os
@@ -17,6 +18,10 @@ def run(args):
     return result.stdout.decode('utf-8', 'replace')
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--public-release', action='store_true',
+                        help='Exclude extracted OEM fonts; read them from the target launcher at runtime.')
+    args = parser.parse_args()
     tools = resolve()
     app = ROOT / 'app'
     output = ROOT / 'build/app'
@@ -52,15 +57,17 @@ def main():
                 target.writestr(info, source.read(info.filename))
             target.writestr('classes.dex', data)
             for asset in sorted((app / 'assets').rglob('*')):
-                if asset.is_file():
+                if asset.is_file() and not (args.public_release and 'fonts' in asset.relative_to(app / 'assets').parts):
                     target.write(asset, 'assets/' + asset.relative_to(app / 'assets').as_posix())
             fonts = ROOT / '.local/oem-fonts'
-            for font in sorted(fonts.glob('*')):
+            packaged_fonts = [] if args.public_release else sorted(fonts.glob('*'))
+            for font in packaged_fonts:
                 if font.suffix in ('.ttf', '.otf'):
                     target.write(font, 'assets/fonts/' + font.name)
             license_file = app / 'src/org/x04g/home/qr/LICENSE-MIT.txt'
             if (app / 'src/org/x04g/home/qr/QrCode.java').exists():
                 target.write(license_file, 'assets/notices/nayuki-qr.txt')
+            target.write(ROOT / 'LICENSE.md', 'assets/notices/project-MIT.txt')
         signing = ROOT / '.local/signing'
         signing.mkdir(parents=True, exist_ok=True)
         password, keystore = signing / 'password.txt', signing / 'app.p12'
@@ -83,7 +90,8 @@ def main():
         report = dict(schema=1, apk='build/app/x04g-home.apk', apk_sha256=sha(signed),
                       dex_sha256=hashlib.sha256(data).hexdigest(), sources={p.relative_to(ROOT).as_posix(): sha(p) for p in sources},
                       signature_verified=True, device_accessed=False,
-                      fonts_included=sorted(p.name for p in fonts.glob('*') if p.suffix in ('.ttf', '.otf')))
+                      public_release=args.public_release,
+                      fonts_included=sorted(p.name for p in packaged_fonts if p.suffix in ('.ttf', '.otf')))
         (output / 'signature.txt').write_text(verification, encoding='utf-8')
         (output / 'build-report.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
         print(json.dumps({k: report[k] for k in ('apk', 'apk_sha256', 'signature_verified', 'device_accessed')}))
