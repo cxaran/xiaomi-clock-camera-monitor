@@ -1,0 +1,452 @@
+{
+  "schema": "x04g.virtual-hardware-payload-provenance.v1",
+  "files": [
+    {
+      "image": "system",
+      "path": "/init.rc",
+      "sha256": "f750d9e9ae490f1cea305192ae2edd5bf1a46c33a5a30fb5b9de3d1d4da37c1d",
+      "bytes": 33197,
+      "payload": "f750d9e9ae490f1cea305192ae2edd5bf1a46c33a5a30fb5b9de3d1d4da37c1d.aosp.zlib"
+    },
+    {
+      "image": "system",
+      "path": "/product/etc/selinux/product_seapp_contexts",
+      "sha256": "d3939ea9871204b999fdef08c916dad3c0e2630d7c7f0ed53fe5e397f727febe",
+      "bytes": 444,
+      "source": {
+        "bytes": 296,
+        "group": "oem_product",
+        "path": "etc/selinux/product_seapp_contexts",
+        "sha256": "0f255be88d4c65ffb0533ed24f6162c00082e1a2a7d18dbb754ff2a6273433a6"
+      },
+      "delta": "5e2ea34be0e6b01938a94c390ffba39caea30b745eb965183d3cc14f3c4e46d6.xor.zlib"
+    },
+    {
+      "image": "system",
+      "path": "/system/etc/init/blank_screen.rc",
+      "sha256": "9fb8466b0ce929ea09d529d3b8eb1750bd37d66d0e5240c978bdb7f2f4f307f9",
+      "bytes": 172,
+      "source": {
+        "bytes": 113,
+        "group": "oem_system",
+        "path": "system/etc/init/blank_screen.rc",
+        "sha256": "1e4d509471f2f88e46a15c1247bb0e5d8a4732b2dcc066eaa09aa70019e525be"
+      },
+      "delta": "5770627d414eb064b78f059966135113895b3dd5c3906c120454623e19615425.xor.zlib"
+    },
+    {
+      "image": "system",
+      "path": "/system/etc/init/bootlogoupdater.rc",
+      "sha256": "569b0b6d30d40cb9da8fd01907a74370b7f1b86021079e924b0d90e51b834f79",
+      "bytes": 189,
+      "source": {
+        "bytes": 135,
+        "group": "oem_system",
+        "path": "system/etc/init/bootlogoupdater.rc",
+        "sha256": "7e58b0c82114ac091f5e1b9aa69a3c5fb090e69cac2acf2e98da4a9071bf9d0d"
+      },
+      "delta": "cd2b89ed2b10977b7fd6d22a2f9754eaf5ec51b1527c821d05c286e2f36f9cf6.xor.zlib"
+    },
+    {
+      "image": "system",
+      "path": "/system/etc/init/camerapostalgo.rc",
+      "sha256": "3c176c1e21b773047419e1efd0d68b9cbc0952d2ed1228f7d333254b8e98687d",
+      "bytes": 204,
+      "source": {
+        "bytes": 145,
+        "group": "oem_system",
+        "path": "system/etc/init/camerapostalgo.rc",
+        "sha256": "5d19e83105fd5ebd604bb86e095b1fe67ab50832d97a83b8b54de17235646e88"
+      },
+      "delta": "af65770494d2b57600b48f722725d4a624e5fa1bcc783164d716107da95b37f1.xor.zlib"
+    },
+    {
+      "image": "system",
+      "path": "/system/etc/init/init.thermald.rc",
+      "sha256": "47368e5432b51c44621832051fdcbdeb0a2af7b1711b001cab72e31bb8b99180",
+      "bytes": 155,
+      "source": {
+        "bytes": 96,
+        "group": "oem_system",
+        "path": "system/etc/init/init.thermald.rc",
+        "sha256": "1ca63c57e501e59c7e6c624c22cd69539fe56568e14da56c64b4abd9a3792083"
+      },
+      "delta": "33350aa08717be14c6c567ce755535d366e2a003437fe819da934dc3e43fcace.xor.zlib"
+    },
+    {
+      "image": "system",
+      "path": "/system/etc/init/terserver.rc",
+      "sha256": "e39c8e2b6a0669dc4e231994b5003367e4cfe70e0a4e1d1e06704f457b25f99d",
+      "bytes": 212,
+      "source": {
+        "bytes": 153,
+        "group": "oem_system",
+        "path": "system/etc/init/terserver.rc",
+        "sha256": "090151351f81078342d7e2a016c7e584c849c6b56d7584f6316609a019189c88"
+      },
+      "delta": "90466abbf83a9b038458284ea7b60a660e9b64f1c0c9d570ca551ef21a2310e7.xor.zlib"
+    },
+    {
+      "image": "system",
+      "path": "/system/etc/prop.default",
+      "sha256": "c366d5baeff0680bb5ce2e8b94168ac1ad996fc7eba488e513a1e4325e5786af",
+      "bytes": 1628,
+      "source": {
+        "bytes": 1517,
+        "group": "oem_system",
+        "path": "system/etc/prop.default",
+        "sha256": "9cc6ce49ab220c164cedd0cb0b543691e0e8e79f8641ec47075f723e5b7df015"
+      },
+      "delta": "248dc89bff486d72dc804b8e067a6d56d44ec4929bd4dede3db5c9d8e1b0f906.xor.zlib"
+    },
+    {
+      "image": "vendor",
+      "path": "/bin/hw/android.hardware.bluetooth@1.0-service.sim",
+      "sha256": "03eddc8c6af6577fb39b4d46edac0b1bcda87037a17d313e9bd14da6dc1d3de7",
+      "bytes": 252204,
+      "payload": "03eddc8c6af6577fb39b4d46edac0b1bcda87037a17d313e9bd14da6dc1d3de7.aosp.zlib",
+      "build_path_redaction": {
+        "fixed_length": true,
+        "occurrences": 26,
+        "original_sha256": "57692c575d83724d8f4c6938931adf2493d5491beaf8956275ae7c7e6d9d55e7"
+      }
+    },
+    {
+      "image": "vendor",
+      "path": "/bin/hw/android.hardware.media.omx@1.0-service",
+      "sha256": "1a6eaff1e8a4cfe00b67994f8854ce4b86a21d7e035106ac9d09a71c55e69810",
+      "bytes": 20232,
+      "source": {
+        "bytes": 20232,
+        "group": "sdk_vendor",
+        "path": "bin/hw/android.hardware.media.omx@1.0-service",
+        "sha256": "4f033e20770979280ab2e8c4ebcdc56e8d492c39d77b4b700766790a5550d95d"
+      },
+      "delta": "0ef8972d3babb055e4734405441c7e7c94fce94f26dcc786a33f799011ea31c5.xor.zlib"
+    },
+    {
+      "image": "vendor",
+      "path": "/bin/hw/android.hardware.wifi@1.0-service",
+      "sha256": "5bec6d2bb73f2644f070e794db034b16c15fe7656fe94714720dc8896b53b3c1",
+      "bytes": 805712,
+      "source": {
+        "bytes": 423376,
+        "group": "sdk_vendor",
+        "path": "bin/hw/android.hardware.wifi@1.0-service",
+        "sha256": "160f89e32e142220d73b255ce848d2187fc78de5fa3bf3241f9202c7849ff2e6"
+      },
+      "delta": "ee7adb97967b7f82b35b92274b5a565124e0e509de10ffb86751802affe3ccc1.xor.zlib",
+      "build_path_redaction": {
+        "fixed_length": true,
+        "occurrences": 13,
+        "original_sha256": "0c1d9343c558827d7e9de0720498de1e2e0ba0f937197ec9650fd9e4fb2c935a"
+      }
+    },
+    {
+      "image": "vendor",
+      "path": "/build.prop",
+      "sha256": "adac7939bc897f2372a095a5d3e396a380096dca2dfc6f496ca62823445e641c",
+      "bytes": 1838,
+      "payload": "adac7939bc897f2372a095a5d3e396a380096dca2dfc6f496ca62823445e641c.aosp.zlib"
+    },
+    {
+      "image": "vendor",
+      "path": "/default.prop",
+      "sha256": "4bec89854cc47f72ba5a80276b45b8bc3565cd4c5dd8c2e9022a4beb0958e0f9",
+      "bytes": 340,
+      "payload": "4bec89854cc47f72ba5a80276b45b8bc3565cd4c5dd8c2e9022a4beb0958e0f9.aosp.zlib"
+    },
+    {
+      "image": "vendor",
+      "path": "/etc/bluetooth/controller_properties.json",
+      "sha256": "334237c927a70778b6716e2e12893176dbbef3ce9fad5206ff78a69654460ee0",
+      "bytes": 290,
+      "payload": "334237c927a70778b6716e2e12893176dbbef3ce9fad5206ff78a69654460ee0.aosp.zlib"
+    },
+    {
+      "image": "vendor",
+      "path": "/etc/init/android.hardware.bluetooth@1.0-service.sim.rc",
+      "sha256": "010db894d315c3bffbb768d59f0465bd3d76a042c5e01534786d331b06ba7eac",
+      "bytes": 140,
+      "payload": "010db894d315c3bffbb768d59f0465bd3d76a042c5e01534786d331b06ba7eac.aosp.zlib"
+    },
+    {
+      "image": "vendor",
+      "path": "/etc/init/hw/init.ranchu.rc",
+      "sha256": "d851ad166c418ffb1c12aca41cd130e5e2b2e93a36475df0bbd425bc7dc86885",
+      "bytes": 5495,
+      "source": {
+        "bytes": 5499,
+        "group": "sdk_vendor",
+        "path": "etc/init/hw/init.ranchu.rc",
+        "sha256": "0f8dd8615885ccd9163c6c6320f9db41ba6147e4d95709818d6e67e6615c9988"
+      },
+      "delta": "f3b2fa85e5671c5f9bc4fca1f3575a9ba54e983ef0e16ad0a84c750d3d3ef904.xor.zlib"
+    },
+    {
+      "image": "vendor",
+      "path": "/etc/permissions/android.hardware.bluetooth.xml",
+      "sha256": "08305a972411f4f0068c23e77e00154826f5335a3e12fc1d6042ca130e1db3fd",
+      "bytes": 820,
+      "payload": "08305a972411f4f0068c23e77e00154826f5335a3e12fc1d6042ca130e1db3fd.aosp.zlib"
+    },
+    {
+      "image": "vendor",
+      "path": "/etc/permissions/android.hardware.bluetooth_le.xml",
+      "sha256": "845f59a4e13fbdda3b48c30a3a0510db45a261af15f31d4925c939dc48d8e3e0",
+      "bytes": 830,
+      "payload": "845f59a4e13fbdda3b48c30a3a0510db45a261af15f31d4925c939dc48d8e3e0.aosp.zlib"
+    },
+    {
+      "image": "vendor",
+      "path": "/etc/selinux/precompiled_sepolicy",
+      "sha256": "15da3cfd600e11c96c564b3560549d037ebba710109602d2ba43066c9b61e8fd",
+      "bytes": 454645,
+      "source": {
+        "bytes": 448437,
+        "group": "sdk_vendor",
+        "path": "etc/selinux/precompiled_sepolicy",
+        "sha256": "183f07919af8042009d7b03a6401703189a45c3742c9b8fcf514202c9a840751"
+      },
+      "delta": "c94e4ac245f09adc6f5c4759d75c2f830d4abc29eeb0a8b15a41bd3f5e00d532.xor.zlib"
+    },
+    {
+      "image": "vendor",
+      "path": "/etc/selinux/precompiled_sepolicy.plat_sepolicy_and_mapping.sha256",
+      "sha256": "2122fb62f52b8c0dd6bee10851596b98a50741e21ea4b2afc58551bdb069207c",
+      "bytes": 65,
+      "source": {
+        "bytes": 65,
+        "group": "sdk_vendor",
+        "path": "etc/selinux/precompiled_sepolicy.plat_sepolicy_and_mapping.sha256",
+        "sha256": "f09444281f94be20b632dd3bdab3a3a4c39b22b23f3f1c493dd703fed9835e45"
+      },
+      "delta": "7939e83cb7a8d545174be0793799dc482cfddad23f9791dc8f841178e39f4bff.xor.zlib"
+    },
+    {
+      "image": "vendor",
+      "path": "/etc/selinux/precompiled_sepolicy.product_sepolicy_and_mapping.sha256",
+      "sha256": "8b2ea4b5d416057bb5d9a9574fdb38572ded7006908da3ac1d141b364633b9c7",
+      "bytes": 65,
+      "source": {
+        "bytes": 65,
+        "group": "sdk_vendor",
+        "path": "etc/selinux/precompiled_sepolicy.product_sepolicy_and_mapping.sha256",
+        "sha256": "38acb15d02d5ac0f2a2789602e9df950c380d2799b4bdb59394e4eeabdd3a662"
+      },
+      "delta": "bef0a7fb7e735f630c4114d4fb845cb3e961d5e2e74478ed7d6b2edfbc36c25d.xor.zlib"
+    },
+    {
+      "image": "vendor",
+      "path": "/etc/selinux/vendor_file_contexts",
+      "sha256": "08a5dd7d9048d32df4e9fba03effab68b34fac82779169447463e220ae46ec09",
+      "bytes": 11624,
+      "source": {
+        "bytes": 11453,
+        "group": "sdk_vendor",
+        "path": "etc/selinux/vendor_file_contexts",
+        "sha256": "6fd7f0e8a5d400f8527e95bc676286914ea799727ccff0c719baff5b1b0780f9"
+      },
+      "delta": "47bc77d328c730713b7e4b7f659a3721d3615d1b679444c679a3099518aff1fc.xor.zlib"
+    },
+    {
+      "image": "vendor",
+      "path": "/etc/selinux/vendor_property_contexts",
+      "sha256": "1713c7e7baf2fb0d8b19af19f90335f2ffcb5b52ead466f8dc4a03454c693374",
+      "bytes": 1001,
+      "source": {
+        "bytes": 845,
+        "group": "sdk_vendor",
+        "path": "etc/selinux/vendor_property_contexts",
+        "sha256": "699d34d44e96583f781beb3b4c6fd3363197679edc3a09be337dddbed059794f"
+      },
+      "delta": "46c5638614ddfccd167d097daa899f41d9d7ac21b8660b1ac10d857aaca335db.xor.zlib"
+    },
+    {
+      "image": "vendor",
+      "path": "/etc/selinux/vendor_sepolicy.cil",
+      "sha256": "731a66269903996872dff69128efbedbee0e05382939a276230de4a95acd71f2",
+      "bytes": 112611,
+      "source": {
+        "bytes": 111800,
+        "group": "sdk_vendor",
+        "path": "etc/selinux/vendor_sepolicy.cil",
+        "sha256": "3f6e16d0fa8c080f54a3a52906e7052c764ad197e554b2b8cc453e4336857f2d"
+      },
+      "delta": "b24c0fb4ff127012d6a57df4e4ad97be2d9c7f7159bd70019b9ef9d8a0898e6e.xor.zlib"
+    },
+    {
+      "image": "vendor",
+      "path": "/lib/egl/libEGL_emulation.so",
+      "sha256": "347b9ddcc8ee2c073cacf646dd71b6c0d6ad1a35565d0f2a7f128c9d2bc242e4",
+      "bytes": 1193100,
+      "payload": "347b9ddcc8ee2c073cacf646dd71b6c0d6ad1a35565d0f2a7f128c9d2bc242e4.aosp.zlib",
+      "build_path_redaction": {
+        "fixed_length": true,
+        "occurrences": 52,
+        "original_sha256": "9f25f3cab9fa4224f4c0595e8d97049652247e6643345df980dff46872a760f0"
+      }
+    },
+    {
+      "image": "vendor",
+      "path": "/lib/egl/libGLESv1_CM_emulation.so",
+      "sha256": "87b8bf9f6bda49e0075edd1b48ebff31dd759858b7b5723bc5a041d2a59865de",
+      "bytes": 201276,
+      "payload": "87b8bf9f6bda49e0075edd1b48ebff31dd759858b7b5723bc5a041d2a59865de.aosp.zlib",
+      "build_path_redaction": {
+        "fixed_length": true,
+        "occurrences": 17,
+        "original_sha256": "117ce9c60c9fde789fbeedfaa4823bb6b2eb31b90bad4ad16eeea1b62a179657"
+      }
+    },
+    {
+      "image": "vendor",
+      "path": "/lib/egl/libGLESv2_emulation.so",
+      "sha256": "065b60053097fa698056feb165b3928420f5791d87c314457ff47266a823daba",
+      "bytes": 290728,
+      "payload": "065b60053097fa698056feb165b3928420f5791d87c314457ff47266a823daba.aosp.zlib",
+      "build_path_redaction": {
+        "fixed_length": true,
+        "occurrences": 17,
+        "original_sha256": "7ab825d60dcf1a8b85c6a3de5e9f422dbe6d75912fe62d834c4154d14ace2c9d"
+      }
+    },
+    {
+      "image": "vendor",
+      "path": "/lib/hw/android.hardware.graphics.mapper@2.0-impl.so",
+      "sha256": "c59f883d6fc4c151f76a305361f887c4f90bcbf0d1fd271828d1b63aed503f46",
+      "bytes": 394044,
+      "payload": "c59f883d6fc4c151f76a305361f887c4f90bcbf0d1fd271828d1b63aed503f46.aosp.zlib",
+      "build_path_redaction": {
+        "fixed_length": true,
+        "occurrences": 23,
+        "original_sha256": "73105eab6e436671859db6b9c3a3fd3493a3962f899dccc53a28d3121e0ff0d0"
+      }
+    },
+    {
+      "image": "vendor",
+      "path": "/lib/hw/gralloc.ranchu.so",
+      "sha256": "efb49e71e1d9c6d5e8eff03086ca639e64894428b8ea2892c4ad19a3b717edb9",
+      "bytes": 335564,
+      "payload": "efb49e71e1d9c6d5e8eff03086ca639e64894428b8ea2892c4ad19a3b717edb9.aosp.zlib",
+      "build_path_redaction": {
+        "fixed_length": true,
+        "occurrences": 35,
+        "original_sha256": "4951cb99a036d11c5141b57ceac90859cb745fb7d349035c6c046408a089eae3"
+      }
+    },
+    {
+      "image": "vendor",
+      "path": "/lib/libGLESv1_enc.so",
+      "sha256": "4c989c9994f48eaf9e849bdf32901fcf615a48e778a569e29282775dbc3343c2",
+      "bytes": 1293796,
+      "payload": "4c989c9994f48eaf9e849bdf32901fcf615a48e778a569e29282775dbc3343c2.aosp.zlib",
+      "build_path_redaction": {
+        "fixed_length": true,
+        "occurrences": 46,
+        "original_sha256": "429eaef9eb0e26cf8b7f8b3bb3b01ed4c3e5f00c4158a1704f6d725aa666fa4c"
+      }
+    },
+    {
+      "image": "vendor",
+      "path": "/lib/libGLESv2_enc.so",
+      "sha256": "24906b15b3071160c36fb9abed081e4718da1298682eaa10a5eff87002a8681b",
+      "bytes": 2352812,
+      "payload": "24906b15b3071160c36fb9abed081e4718da1298682eaa10a5eff87002a8681b.aosp.zlib",
+      "build_path_redaction": {
+        "fixed_length": true,
+        "occurrences": 71,
+        "original_sha256": "ece3291b5d5a87f8981d4580484f4f2e98988799a45fdec9a88ecedf23e30d82"
+      }
+    },
+    {
+      "image": "vendor",
+      "path": "/lib/libOpenglCodecCommon.so",
+      "sha256": "d975261a7984c25a8ee6c0b5719d4e80c0c0e930b261956a013e99bfd5ca1362",
+      "bytes": 1745196,
+      "payload": "d975261a7984c25a8ee6c0b5719d4e80c0c0e930b261956a013e99bfd5ca1362.aosp.zlib",
+      "build_path_redaction": {
+        "fixed_length": true,
+        "occurrences": 73,
+        "original_sha256": "84cb7080287a45a58a16d87fb4aba94fade01f01c8171a9a94aef05cd8230827"
+      }
+    },
+    {
+      "image": "vendor",
+      "path": "/lib/libOpenglSystemCommon.so",
+      "sha256": "913893cc7b50fb5e00884f6e9ef3bad2c1935bba040ca2ee71128c06de6f4b48",
+      "bytes": 178880,
+      "payload": "913893cc7b50fb5e00884f6e9ef3bad2c1935bba040ca2ee71128c06de6f4b48.aosp.zlib",
+      "build_path_redaction": {
+        "fixed_length": true,
+        "occurrences": 47,
+        "original_sha256": "c4707d0bfe6a06405c2b3bee07d4a0d11ea03be551a3bbfeab5d15d276b26f02"
+      }
+    },
+    {
+      "image": "vendor",
+      "path": "/lib/lib_renderControl_enc.so",
+      "sha256": "68ad56e20c8f465699ff02f497e868e0e350667055179a4611448b45c0f0f003",
+      "bytes": 131820,
+      "payload": "68ad56e20c8f465699ff02f497e868e0e350667055179a4611448b45c0f0f003.aosp.zlib",
+      "build_path_redaction": {
+        "fixed_length": true,
+        "occurrences": 25,
+        "original_sha256": "bd58efa3d187cac8e66031e0bf315e0fe5f63007184a2b762436acffd4910273"
+      }
+    },
+    {
+      "image": "vendor",
+      "path": "/lib/libevent.so",
+      "sha256": "02d3254fe04639bf6b77ee9b282409888802d32474aa9dcc1106834b388c96f4",
+      "bytes": 285800,
+      "source": {
+        "bytes": 285800,
+        "group": "oem_system",
+        "path": "system/lib/libevent.so",
+        "sha256": "1cfca39e817882eed9256dd6b48c365a925fa2c794bd5618978812739ea1bb41"
+      },
+      "delta": "61d699f9b60304082f780ceb48ae1e28b270aa381b151750e4d315ef06f779f2.xor.zlib"
+    },
+    {
+      "image": "vendor",
+      "path": "/manifest.xml",
+      "sha256": "54f6971fdd662ebbc35560fdecb17bb6deed48e980f71650859568c41515293c",
+      "bytes": 7180,
+      "source": {
+        "bytes": 6905,
+        "group": "sdk_vendor",
+        "path": "manifest.xml",
+        "sha256": "29023b98242e9799c0f9b1958cdb58758838f124ca9bf01befa7335f395b03e4"
+      },
+      "delta": "6ee13ec0fa823a4ab533abdc6eee84a170c7abba3f893a0b9e85ef13f5c887b9.xor.zlib"
+    },
+    {
+      "image": "vendor",
+      "path": "/odm/etc/build.prop",
+      "sha256": "7840bca43d27db4b1cbc1988bec7881517b80b7805b17fd73b2da2a5f8609a09",
+      "bytes": 798,
+      "source": {
+        "bytes": 838,
+        "group": "sdk_vendor",
+        "path": "odm/etc/build.prop",
+        "sha256": "58b3761101d8b5244b3d7fe96d999a425f6c1d4cad8cc57dc9bf83fbbd39d865"
+      },
+      "delta": "28688749fda6028345a86d37bc59c1f1a44c2e5dcacbf4424b0295cea7a22dfb.xor.zlib"
+    },
+    {
+      "image": "vendor",
+      "path": "/ueventd.rc",
+      "sha256": "3433ced7e021322ba4649adcd682d97a2f5c0c3d07b60e936979e472f11ce5c2",
+      "bytes": 490,
+      "source": {
+        "bytes": 425,
+        "group": "sdk_vendor",
+        "path": "ueventd.rc",
+        "sha256": "a357b0a57abc5715dc810880c34f069676c894de1f778167f7e5d7178aa4ac8c"
+      },
+      "delta": "9c48658e68fc30bf9b9c73a4d68f43bb197517a95312e14ba25d8b5b8f22d6f4.xor.zlib"
+    }
+  ],
+  "binary_build_path_redaction": "Fixed-length replacements in AOSP ELF diagnostic/debug paths only; OEM bytes are preserved."
+}

@@ -1,0 +1,189 @@
+package org.x04g.home.camera;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+
+/** Synthetic public/RFC vectors only. Never constructs a Socket or uses Android. */
+public final class CameraProtocolFixtures {
+    private static int checks;
+    private interface Check {void run()throws Exception;}
+    public static void main(String[] args)throws Exception {
+        digest();basic();sdp();rtp();h264();audio();wire();credentials();addresses();progress();
+        System.out.println("{\"protocol_fixture_pass\":true,\"checks\":"+checks+",\"sockets_created\":false}");
+    }
+    private static void yes(boolean ok){checks++;if(!ok)throw new AssertionError("fixture_failed_"+checks);}
+    private static void rejects(Check test)throws Exception {
+        boolean rejected=false;try{test.run();}catch(RtspFailure|IllegalArgumentException|IllegalStateException|EOFException expected){rejected=true;}
+        yes(rejected);
+    }
+    private static CameraEndpoint endpoint(String user,char[] password){return new CameraEndpoint("camera.invalid",554,"/stream2",user,password);}
+    private static void digest()throws Exception {
+        CameraEndpoint e=endpoint("Mufasa","Circle Of Life".toCharArray());
+        RtspAuth auth=RtspAuth.parse("Digest realm=\"testrealm@host.com\", qop=\"auth,auth-int\", nonce=\"dcd98b7102dd2f0e8b11d0f600bfb0c093\", opaque=\"5ccc069c403ebaf9f0171e9517f40e41\"","0a4f113b");
+        String out=auth.authorization("GET","/dir/index.html",e);
+        // RFC2617 public example: independent, fixed expected digest.
+        yes(out.contains("response=\"6629fae49393a05397450978507c4ef1\""));
+        yes(!out.contains("algorithm="));
+        yes(out.contains("nc=00000001"));
+        yes(auth.authorization("GET","/dir/index.html",e).contains("nc=00000002"));
+        RtspAuth legacy=RtspAuth.parse("Digest realm=\"r\", nonce=\"n\"","testnonce");
+        String legacyOut=legacy.authorization("DESCRIBE",e.uri(),e);
+        yes(!legacyOut.contains("qop="));yes(!legacyOut.contains("algorithm="));
+        String base="Digest realm=\"testrealm@host.com\", nonce=\"dcd98b7102dd2f0e8b11d0f600bfb0c093\"";
+        String implicit=RtspAuth.parse(base,"0a4f113b").authorization("GET","/dir/index.html",e);
+        yes(implicit.contains("response=\"670fd8c2df070c60b045671b8b24ff02\""));
+        yes(!implicit.contains("algorithm="));
+        String explicit=RtspAuth.parse(base+", algorithm=MD5","0a4f113b").authorization("GET","/dir/index.html",e);
+        yes(explicit.equals(implicit+", algorithm=MD5"));
+        // Fixed expected results computed independently with Python hashlib;
+        // preserve explicit algorithms, including session cnonce without qop.
+        String md5sess=RtspAuth.parse(base+", algorithm=MD5-sess","0a4f113b").authorization("GET","/dir/index.html",e);
+        yes(md5sess.contains("algorithm=MD5-sess"));yes(md5sess.contains("cnonce=\"0a4f113b\""));
+        yes(!md5sess.contains("qop="));yes(md5sess.contains("response=\"4726bc10c33fa6cb357eb27807b1cce8\""));
+        String sha256=RtspAuth.parse(base+", algorithm=SHA-256","0a4f113b").authorization("GET","/dir/index.html",e);
+        yes(sha256.contains("algorithm=SHA-256"));
+        yes(sha256.contains("response=\"e71f89d8267982ee1cd4dfb3637698eaf2f55848fe056aee7be175262aab5d2a\""));
+        String sha256sess=RtspAuth.parse(base+", algorithm=SHA-256-sess, qop=\"auth\"","0a4f113b").authorization("GET","/dir/index.html",e);
+        yes(sha256sess.contains("algorithm=SHA-256-sess"));yes(sha256sess.contains("qop=auth, nc=00000001, cnonce=\"0a4f113b\""));
+        yes(sha256sess.contains("response=\"b8822e12417cb7750f4e2b8515f0dcf25b7dd26993e80bee1426201446a7f59b\""));
+        rejects(()->RtspAuth.parse("Digest realm=\"r\",nonce=\"n\",qop=\"auth-int\"","x"));
+        rejects(()->RtspAuth.parse("Digest realm=\"r\",nonce=\"n\",algorithm=unknown","x"));
+        rejects(()->RtspAuth.parse("Digest realm=\"r\",realm=\"other\",nonce=\"n\"","x"));
+        e.close();
+    }
+    private static void basic()throws Exception {
+        CameraEndpoint e=endpoint("Aladdin","open sesame".toCharArray());
+        String value=RtspAuth.parse("Basic realm=\"fixture\"","x").authorization("DESCRIBE",e.uri(),e);
+        yes(value.equals("Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=="));e.close();
+    }
+    private static void sdp()throws Exception {
+        String text="v=0\r\na=control:*\r\nm=video 0 RTP/AVP 96\r\na=rtpmap:96 H264/90000\r\na=fmtp:96 packetization-mode=1;sprop-parameter-sets=Z0IAH5WoFAFuQA==,aM4xUg==\r\na=control:trackID=0\r\nm=audio 0 RTP/AVP 8\r\na=control:trackID=1\r\n";
+        SdpSession s=SdpSession.parse(text.getBytes(StandardCharsets.UTF_8),"rtsp://camera.invalid:554/stream2","rtsp://camera.invalid:554/stream2/");
+        yes(s.video.payloadType==96 && s.audio.payloadType==8);
+        yes(s.video.control.equals("rtsp://camera.invalid:554/stream2/trackID=0"));
+        yes(s.playUri.equals("rtsp://camera.invalid:554/stream2"));
+        yes((s.video.sps[0]&31)==7 && (s.video.pps[0]&31)==8);
+        H264Sps size=H264Sps.parse(s.video.sps);yes(size.width==1280 && size.height==720);
+        rejects(()->SdpSession.resolve("rtsp://camera.invalid:554/stream2","rtsp://camera.invalid:554/","rtsp://other.invalid/track"));
+        rejects(()->SdpSession.parse(text.replace("mode=1","mode=2").getBytes(StandardCharsets.UTF_8),"rtsp://camera.invalid:554/stream2",null));
+        rejects(()->SdpSession.parse(new byte[65537],"rtsp://camera.invalid/stream2",null));
+        rejects(()->SdpSession.parse(text.replace("trackID=0","rtsp://camera.invalid:554/trackID=0").replace("trackID=1","rtsp://camera.invalid:554/trackID=1").getBytes(StandardCharsets.UTF_8),"rtsp://camera.invalid:554/stream2","rtsp://other.invalid:554/"));
+        rejects(()->SdpSession.resolve("rtsp://camera.invalid:554/stream2","rtsp://camera.invalid:554/","rtsp://camera.invalid:8554/track"));
+        rejects(()->SdpSession.resolve("rtsp://camera.invalid:554/stream2","rtsp://camera.invalid:554/","rtsp://user@camera.invalid:554/track"));
+    }
+    private static byte[] packet(int sequence,long stamp,boolean marker,byte...payload) {
+        byte[] p=new byte[12+payload.length];p[0]=(byte)0x80;p[1]=(byte)(96|(marker?128:0));
+        p[2]=(byte)(sequence>>8);p[3]=(byte)sequence;
+        for(int i=0;i<4;i++)p[4+i]=(byte)(stamp>>(24-8*i));p[11]=1;
+        System.arraycopy(payload,0,p,12,payload.length);return p;
+    }
+    private static void rtp()throws Exception {
+        byte[] p=packet(65535,0xffffffffL,true,(byte)0x65,(byte)1);
+        RtpPacket parsed=RtpPacket.parse(p,p.length);
+        yes(parsed.sequence==65535 && parsed.timestamp==0xffffffffL && parsed.marker && parsed.length==2);
+        byte[] extended=new byte[30];extended[0]=(byte)0xb1;extended[1]=8;
+        extended[18]=0;extended[19]=1;extended[24]=1;extended[25]=2;extended[26]=3;extended[29]=3;
+        RtpPacket x=RtpPacket.parse(extended,extended.length);yes(x.offset==24 && x.length==3);
+        extended[29]=0;rejects(()->RtpPacket.parse(extended,extended.length));
+        p[0]=0;rejects(()->RtpPacket.parse(p,p.length));
+        rejects(()->RtpPacket.parse(new byte[11],11));
+    }
+    private static void h264()throws Exception {
+        List<byte[]> output=new ArrayList<>();List<Long> time=new ArrayList<>();
+        H264Assembler h=new H264Assembler((b,t,key)->{output.add(b);time.add(t);yes(key);},new byte[]{0x67,1},new byte[]{0x68,2});
+        feed(h,packet(1,90000,true,(byte)0x65,(byte)3,(byte)4));yes(output.size()==1 && output.get(0).length==19);
+        // Sequence and timestamp wrap: the next 90k ticks still produce one second.
+        output.clear();h.reset();
+        feed(h,packet(65535,0xffff0000L,true,(byte)0x65,(byte)1));
+        feed(h,packet(0,(0xffff0000L+90000)&0xffffffffL,true,(byte)0x65,(byte)2));
+        yes(time.get(time.size()-1)==1000000L);
+        output.clear();h.reset();
+        feed(h,packet(10,0,false,(byte)0x7c,(byte)0x85,(byte)0x11,(byte)0x22));
+        feed(h,packet(11,0,true,(byte)0x7c,(byte)0x45,(byte)0x33));
+        byte[] au=output.get(0);yes(au[au.length-4]==0x65 && au[au.length-3]==0x11 && au[au.length-1]==0x33);
+        output.clear();h.reset();
+        feed(h,packet(20,0,false,(byte)0x7c,(byte)0x85,(byte)0x11));
+        feed(h,packet(22,0,true,(byte)0x7c,(byte)0x45,(byte)0x22));yes(output.isEmpty());
+        feed(h,packet(23,90000,true,(byte)0x65,(byte)0x44));yes(output.size()==1 && h.lostPackets>=1);
+        output.clear();h.reset();
+        ByteArrayOutputStream stap=new ByteArrayOutputStream();stap.write(24);
+        for(byte[] nal:new byte[][]{Base64.getDecoder().decode("Z0IAH5WoFAFuQA=="),new byte[]{0x68,2},new byte[]{0x65,3}}) {
+            stap.write(nal.length>>8);stap.write(nal.length);stap.write(nal);
+        }
+        feed(h,packet(30,0,true,stap.toByteArray()));
+        yes(output.size()==1);
+        rejects(()->feed(h,packet(31,90000,true,(byte)24,(byte)0,(byte)5,(byte)0x65)));
+        rejects(()->feed(h,packet(32,90000,true,(byte)0x7c,(byte)0xc5,(byte)1)));
+        byte[] huge=new byte[H264Assembler.MAX_ACCESS_UNIT];huge[0]=0x65;
+        rejects(()->feed(h,packet(33,90000,true,huge)));
+        byte[] hugeSps=new byte[H264Assembler.MAX_PARAMETER_SET+1];hugeSps[0]=0x67;
+        rejects(()->feed(h,packet(34,180000,true,hugeSps)));
+        output.clear();H264Assembler deferred=new H264Assembler((b,t,key)->output.add(b),null,null);
+        feed(deferred,packet(1,0,true,(byte)0x65,(byte)1));yes(output.isEmpty());
+        yes(deferred.parameterSps()==null && deferred.parameterPps()==null);
+        feed(deferred,packet(2,90000,true,stap.toByteArray()));
+        yes(output.size()==1 && deferred.parameterSps()!=null && deferred.parameterPps()!=null);
+        byte[] own=deferred.parameterSps();own[0]=0;yes((deferred.parameterSps()[0]&31)==7);
+    }
+    private static void feed(H264Assembler h,byte[] b)throws Exception {h.packet(RtpPacket.parse(b,b.length));}
+    private static void audio() {
+        yes(G711.alaw(0xd5)==8);yes(G711.alaw(0x55)==-8);
+        yes(G711.alaw(0xaa)==32256);yes(G711.alaw(0x2a)==-32256);
+        yes(G711.alaw(0x80)==5504);yes(G711.alaw(0)==-5504);
+        short[] pcm=new short[2];yes(G711.decode(new byte[]{(byte)0xd5,0x55},0,2,pcm)==2);
+        yes(Arrays.equals(pcm,new short[]{8,-8}));
+    }
+    private static void wire()throws Exception {
+        byte[] text="RTSP/1.0 200 OK\r\nCSeq: 7\r\nContent-Length: 4\r\n\r\nTEST".getBytes(StandardCharsets.US_ASCII);
+        ByteArrayOutputStream bytes=new ByteArrayOutputStream();bytes.write(new byte[]{'$',0,0,2,1,2});bytes.write(text);
+        RtspWire reader=new RtspWire(new ByteArrayInputStream(bytes.toByteArray()){
+            @Override public synchronized int read(byte[] b,int off,int len){return super.read(b,off,Math.min(len,2));}
+        });
+        RtspWire.Message rtp=reader.next(),response=reader.next();
+        yes(rtp.interleaved() && rtp.channel==0 && rtp.body.length==2);
+        yes(response.status==200 && response.first("cseq").equals("7") && Arrays.equals(response.body,new byte[]{'T','E','S','T'}));
+        rejects(()->new RtspWire(new ByteArrayInputStream("RTSP/1.0 200 OK\r\nContent-Length: 1\r\nContent-Length: 1\r\n\r\nX".getBytes(StandardCharsets.US_ASCII))).next());
+        rejects(()->new RtspWire(new ByteArrayInputStream(new byte[]{'$',0,0,3,1})).next());
+    }
+    private static void credentials()throws Exception {
+        char[] original={'s','y','n','t','h','e','t','i','c'};
+        CameraEndpoint first=endpoint("fixture",original),copy=first.copy();first.close();
+        rejects(()->first.passwordCopy());yes(copy.passwordCopy()[0]=='s');
+        yes(!copy.toString().contains("fixture") && !copy.toString().contains("synthetic"));copy.close();
+        rejects(()->new CameraEndpoint("camera.invalid\r\nOther",554,"/stream2","fixture",original));
+    }
+    private static void addresses()throws Exception {
+        yes(CameraAddress.numeric("192.168.40.5").getAddress().length==4);
+        rejects(()->CameraAddress.numeric("127.0.0.1"));
+        rejects(()->CameraAddress.numeric("8.8.8.8"));
+        rejects(()->CameraAddress.numeric("192.168.40.999"));
+        rejects(()->CameraAddress.numeric("224.0.0.251"));
+        yes(CameraAddress.numeric("10.0.2.2").isSiteLocalAddress());
+    }
+    private static void progress() {
+        CameraProgress read=new CameraProgress();
+        read.beginMessage(100);
+        yes(read.expired(5099)==CameraProgress.Cause.NONE);
+        // Simulated byte trickle/video activity does not extend this message.
+        read.videoPacket(5099);read.frameRendered(5099);
+        yes(read.expired(5100)==CameraProgress.Cause.MESSAGE_TIMEOUT);
+        read.endMessage();yes(read.expired(5100)==CameraProgress.Cause.NONE);
+        read.beginMessage(6000);yes(read.expired(10999)==CameraProgress.Cause.NONE);
+        read.endMessage();
+        CameraProgress first=new CameraProgress();first.armStream(0);
+        first.videoPacket(11999);yes(first.expired(11999)==CameraProgress.Cause.NONE);
+        yes(first.expired(12000)==CameraProgress.Cause.FIRST_FRAME_TIMEOUT);
+        CameraProgress rendered=new CameraProgress();rendered.armStream(0);rendered.frameRendered(1000);
+        rendered.videoPacket(8999);yes(rendered.expired(8999)==CameraProgress.Cause.NONE);
+        rendered.videoPacket(9000);yes(rendered.expired(9000)==CameraProgress.Cause.FRAME_STALLED);
+        rendered.frameRendered(9000);yes(rendered.expired(9000)==CameraProgress.Cause.NONE);
+        CameraProgress noVideo=new CameraProgress();noVideo.armStream(0);
+        yes(noVideo.expired(8000)==CameraProgress.Cause.VIDEO_TIMEOUT);
+    }
+}

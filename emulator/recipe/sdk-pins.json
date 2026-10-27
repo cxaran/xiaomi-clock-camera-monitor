@@ -1,0 +1,81 @@
+{
+  "sdk_archive": {
+    "url": "https://dl.google.com/android/repository/sys-img/android/arm64-v8a-29_r08.zip",
+    "bytes": 498049256,
+    "sha256": "7fd1610e16a69ac2e202278e82077de134ce404fe099d872019f69f3a340acdd"
+  },
+  "files": [
+    {
+      "name": "NOTICE.txt",
+      "bytes": 2167454,
+      "sha256": "3ca835a763d93cbd2132f24bab0179a964364f2be5e2ccb7b42c4e6584246d53"
+    },
+    {
+      "name": "VerifiedBootParams.textproto",
+      "bytes": 356,
+      "sha256": "790c65cbff983df876b1f57cf4762e9f3514d7a4e5ba6afb693ce220ce21e2fc"
+    },
+    {
+      "name": "advancedFeatures.ini",
+      "bytes": 335,
+      "sha256": "5068ef47dcbe717ed3e0998374b88990e83f57f11d3ad2fd0e571792e7d1f8e7"
+    },
+    {
+      "name": "build.prop",
+      "bytes": 2888,
+      "sha256": "6e1ca78df85674c0e4dcafb2be7e567df391fa45a971eee240606a8515c61eab"
+    },
+    {
+      "name": "encryptionkey.img",
+      "bytes": 1048576,
+      "sha256": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58"
+    },
+    {
+      "name": "kernel-ranchu",
+      "bytes": 6081088,
+      "sha256": "77e368c5e4d7a58b732843a31fd2148c7062a637ca3a998b67c7e60be7797cd0"
+    },
+    {
+      "name": "ramdisk.img",
+      "bytes": 790109,
+      "sha256": "5f4d24bdbdd3cbbd1349fa0a3eff7cd358d5c0ec0bf0ba7fa02c9366ff2751f7"
+    },
+    {
+      "name": "source.properties",
+      "bytes": 226,
+      "sha256": "74d67d6da63d9fd3f39d63d8102b712efe409f355f29f83a4a8ad6f7ff7b84ea"
+    },
+    {
+      "name": "system.img",
+      "bytes": 3232759808,
+      "sha256": "7ec28d910a2654fe1737263f11ff52762206b71ae10423774f8738b6cf64c930"
+    },
+    {
+      "name": "userdata.img",
+      "bytes": 1048576,
+      "sha256": "30e14955ebf1352266dc2ff8067e68104607e750abb9d3b36582b8af909fcb58"
+    },
+    {
+      "name": "vendor.img",
+      "bytes": 58720256,
+      "sha256": "d154829c11544a9c6b1ea8e490a9b7ae2babd3e852ed5f1e02aaf5d1e44a1cee"
+    },
+    {
+      "name": "data/local.prop",
+      "bytes": 16,
+      "sha256": "525f27b679ef3405f3ba1cff53055e2e678de4442d330f9c1701d2d8517c2725"
+    },
+    {
+      "name": "data/misc/apns/apns-conf.xml",
+      "bytes": 6575,
+      "sha256": "c35b899f2b6296aee4a9742302651cce9eb64622669d4d8fe8d276ca11060eb6"
+    },
+    {
+      "name": "data/misc/wifi/WifiConfigStore.xml",
+      "bytes": 2427,
+      "sha256": "f9fb2931f1d952ea0503b277d71fea3468b3cd3ecb6e5e441f21b7521aceb1a3"
+    }
+  ],
+  "system_ext4_offset": 3145728,
+  "vendor_ext4_offset": 1048576
+}

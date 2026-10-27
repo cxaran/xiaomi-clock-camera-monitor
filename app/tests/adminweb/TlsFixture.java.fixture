@@ -1,0 +1,69 @@
+package org.x04g.home.adminweb.fixtures;
+
+import java.nio.ByteBuffer;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.KeyStore;
+import java.security.cert.X509Certificate;
+import java.security.spec.ECGenParameterSpec;
+import java.util.Date;
+import javax.net.ssl.*;
+import org.x04g.home.adminweb.tls.CertificateKeyManager;
+import org.x04g.home.adminweb.tls.DerCertificates;
+
+/** TLS records travel through bounded byte buffers only; no network or listening socket. */
+public final class TlsFixture {
+    private static final String CIPHER="TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256";
+    private static void tasks(SSLEngine engine) {
+        Runnable r; while ((r=engine.getDelegatedTask())!=null) r.run();
+    }
+    private static void unwrap(SSLEngine engine,ByteBuffer network,ByteBuffer app) throws Exception {
+        network.flip();
+        while(network.hasRemaining()) {
+            SSLEngineResult result=engine.unwrap(network,app); tasks(engine);
+            if(result.getStatus()==SSLEngineResult.Status.BUFFER_OVERFLOW)throw new AssertionError("BOUNDED_BUFFER");
+            if(result.getStatus()==SSLEngineResult.Status.BUFFER_UNDERFLOW || result.bytesConsumed()==0)break;
+        }
+        network.compact();
+    }
+    private static void handshake(SSLContext client,SSLContext server,String host) throws Exception {
+        SSLEngine a=client.createSSLEngine(host,443),b=server.createSSLEngine();
+        a.setUseClientMode(true);b.setUseClientMode(false);
+        SSLParameters params=a.getSSLParameters();params.setEndpointIdentificationAlgorithm("HTTPS");a.setSSLParameters(params);
+        for(SSLEngine e:new SSLEngine[]{a,b}){e.setEnabledProtocols(new String[]{"TLSv1.2"});e.setEnabledCipherSuites(new String[]{CIPHER});e.beginHandshake();}
+        ByteBuffer cs=ByteBuffer.allocate(65536),sc=ByteBuffer.allocate(65536),aa=ByteBuffer.allocate(65536),ba=ByteBuffer.allocate(65536),empty=ByteBuffer.allocate(0);
+        for(int i=0;i<1000;i++) {
+            tasks(a);tasks(b);
+            if(a.getHandshakeStatus()==SSLEngineResult.HandshakeStatus.NEED_WRAP)a.wrap(empty,cs);
+            if(b.getHandshakeStatus()==SSLEngineResult.HandshakeStatus.NEED_WRAP)b.wrap(empty,sc);
+            unwrap(b,cs,ba);unwrap(a,sc,aa);tasks(a);tasks(b);
+            if(a.getHandshakeStatus()==SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING
+                &&b.getHandshakeStatus()==SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING){
+                if(!"TLSv1.2".equals(a.getSession().getProtocol())||!CIPHER.equals(a.getSession().getCipherSuite()))throw new AssertionError("TLS");
+                a.wrap(ByteBuffer.wrap(new byte[]{1,2,3,4}),cs);unwrap(b,cs,ba);
+                if(ba.position()!=4)throw new AssertionError("APPLICATION_BYTES");
+                return;
+            }
+        }
+        throw new AssertionError("HANDSHAKE_DID_NOT_FINISH");
+    }
+    public static void main(String[] args)throws Exception {
+        KeyPairGenerator g=KeyPairGenerator.getInstance("EC");g.initialize(new ECGenParameterSpec("secp256r1"));
+        KeyPair caKey=g.generateKeyPair(),leafKey=g.generateKeyPair();long n=System.currentTimeMillis();
+        X509Certificate ca=DerCertificates.ca(caKey.getPublic(),caKey.getPrivate(),new Date(n-60000),new Date(n+86400000));
+        X509Certificate leaf=DerCertificates.leaf(leafKey.getPublic(),caKey.getPrivate(),ca,new byte[]{10,(byte)203,11,7},new Date(n-60000),new Date(n+3600000));
+        SSLContext server=SSLContext.getInstance("TLSv1.2");server.init(new KeyManager[]{new CertificateKeyManager(leafKey.getPrivate(),new X509Certificate[]{leaf,ca})},null,null);
+        KeyStore trusted=KeyStore.getInstance(KeyStore.getDefaultType());trusted.load(null,null);trusted.setCertificateEntry("ca",ca);
+        TrustManagerFactory tmf=TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());tmf.init(trusted);
+        SSLContext client=SSLContext.getInstance("TLSv1.2");client.init(null,tmf.getTrustManagers(),null);
+        handshake(client,server,"10.203.11.7");
+        boolean rejected=false;try{handshake(client,server,"10.203.11.8");}catch(SSLException expected){rejected=true;}
+        if(!rejected)throw new AssertionError("WRONG_IP_ACCEPTED");
+        KeyStore empty=KeyStore.getInstance(KeyStore.getDefaultType());empty.load(null,null);
+        KeyPair unrelated=g.generateKeyPair();empty.setCertificateEntry("unrelated",DerCertificates.ca(unrelated.getPublic(),unrelated.getPrivate(),new Date(n-60000),new Date(n+86400000)));tmf.init(empty);
+        SSLContext untrusted=SSLContext.getInstance("TLSv1.2");untrusted.init(null,tmf.getTrustManagers(),null);
+        rejected=false;try{handshake(untrusted,server,"10.203.11.7");}catch(SSLException expected){rejected=true;}
+        if(!rejected)throw new AssertionError("UNKNOWN_CA_ACCEPTED");
+        System.out.println("TLS_ENGINE_CHECKS=4");
+    }
+}

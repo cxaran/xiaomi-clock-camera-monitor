@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer"><title>Cámaras · X04G</title>
+<style nonce="{{nonce}}">
+:root{color-scheme:dark;font:16px system-ui,sans-serif;background:#0e151c;color:#eff4f8}*{box-sizing:border-box}body{margin:0 auto;padding:24px 18px;max-width:760px}h1{font-size:1.7rem;margin:0 0 8px}h2{font-size:1.15rem}p{line-height:1.5;color:#bdcbd6}section,article{border:1px solid #344350;border-radius:14px;padding:18px;margin:18px 0;background:#17222c}label{display:block;margin:14px 0 6px}input,button{font:inherit;border-radius:8px;min-height:44px;padding:10px 12px}input:not([type=checkbox]){width:100%;border:1px solid #566b7c;background:#101a23;color:#fff}button{border:1px solid #627d90;background:#294456;color:#fff;cursor:pointer;margin:7px 7px 0 0}button.primary{background:#c4ed78;color:#17200b;border-color:#c4ed78}button.danger{background:#422b30}button:disabled{opacity:.5;cursor:wait}.row{display:flex;gap:14px}.row>label{flex:1}.notice{border-left:4px solid #c4ed78;padding-left:14px}#status{white-space:pre-line;min-height:1.5em;color:#dbedba}small{color:#c1ced9}input[type=checkbox]{vertical-align:middle;width:22px;height:22px}code{overflow-wrap:anywhere}summary{cursor:pointer;min-height:44px;padding-top:10px}[hidden]{display:none!important}
+</style>
+<h1>Cámaras del reloj</h1>
+<p class="notice">Administración temporal en tu red local. El vídeo permanece detenido mientras administras. Las pruebas se autorizan en la pantalla del reloj.</p>
+<p id="status" role="status" aria-live="polite">Escribe el código que muestra el reloj.</p>
+<section id="pairing"><h2>Emparejar este teléfono</h2>
+<form id="pairForm"><label for="code">Código de 8 dígitos</label><input id="code" inputmode="numeric" pattern="[0-9]{8}" maxlength="8" autocomplete="off" required><button class="primary">Emparejar</button></form>
+<p>Conecta el teléfono a la misma red local y escribe el código que aparece en el reloj.</p></section>
+<main id="admin" hidden><div><button id="new" class="primary">Añadir cámara</button><button id="reload">Actualizar lista</button><button id="close">Cerrar sesión</button></div>
+<div id="list" aria-live="polite"></div>
+<section id="editor" hidden><h2 id="editTitle">Añadir cámara</h2><form id="cameraForm" autocomplete="off">
+<label for="label">Nombre</label><input id="label" maxlength="48" required>
+<div class="row"><label>IP o nombre local<input id="host" maxlength="253" placeholder="192.168.0.20" required autocapitalize="off" spellcheck="false"></label><label>Puerto RTSP<input id="port" type="number" min="1" max="65535" value="554" required></label></div>
+<label for="path">Ruta del substream</label><input id="path" maxlength="512" value="/stream2" required autocapitalize="off" spellcheck="false">
+<label for="username">Usuario <small>(en una cámara guardada, vacío conserva el anterior)</small></label><input id="username" maxlength="128" autocomplete="off" autocapitalize="off" spellcheck="false">
+<label for="password">Contraseña <small>(vacía conserva la anterior)</small></label><input id="password" type="password" maxlength="512" autocomplete="new-password">
+<label><input id="enabled" type="checkbox" checked> Mostrar en el reloj después de verificar</label>
+<details><summary>Identidad estable y modelo</summary><label for="mac">MAC (opcional)</label><input id="mac" maxlength="32" autocapitalize="off" spellcheck="false"><label for="onvif">UUID ONVIF (opcional)</label><input id="onvif" maxlength="80" autocapitalize="off" spellcheck="false"><label for="model">Modelo (opcional)</label><input id="model" maxlength="64"></details>
+<p>Guardar conserva la entrada como pendiente. No se usará hasta probar y guardar en el reloj. Esta página no muestra contraseñas existentes.</p>
+<button class="primary">Guardar pendiente</button><button id="cancel" type="button">Cancelar</button>
+</form></section></main>
+<script nonce="{{nonce}}">
+'use strict';
+let csrf='',revision=0,editRevision=0,cameras=[],editing='',busy=false,ended=false;
+const $=id=>document.getElementById(id),status=text=>{$('status').textContent=text;};
+function lock(value){busy=value;document.querySelectorAll('button').forEach(b=>b.disabled=value||ended);}
+async function request(path,body){
+ const options={method:body===undefined?'GET':'POST',credentials:'same-origin',cache:'no-store',redirect:'error',headers:{}};
+ if(body!==undefined){options.headers['Content-Type']='application/json';if(csrf)options.headers['X-CSRF-Token']=csrf;options.body=JSON.stringify(body);}
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),10000);options.signal=controller.signal;
+ try{const response=await fetch(path,options),text=await response.text();if(text.length>131072)throw Error('RESPONSE_LIMIT');const data=JSON.parse(text);if(!response.ok)throw Error(data.error||'REQUEST_REJECTED');return data;}
+ finally{clearTimeout(timer);options.body='';}
+}
+async function action(work){if(busy||ended)return;lock(true);try{await work();}catch(e){
+ const known={CONFLICT:'La lista cambió. Actualízala antes de guardar.',PAIRING_FAILED:'Código incorrecto. La sesión admite cinco intentos.',PAIRING_REQUIRED:'Vuelve a emparejar desde el reloj.',ALREADY_PAIRED:'Esta sesión ya está emparejada.',INVALID_INPUT:'Revisa los campos. No incluyas usuario o contraseña en la dirección.',DEVICE_CONFIRMATION_PENDING:'Ya hay una confirmación pendiente en el reloj.',NOT_FOUND:'La entrada ya no existe.',LIMIT:'Se alcanzó el límite de cámaras.'};
+ status(known[e.message]||'No se pudo confirmar la operación. Si estabas guardando, actualiza la lista antes de volver a intentarlo. La sesión puede haber caducado.');
+ }finally{lock(false);}}
+function accept(data){revision=data.revision;cameras=data.cameras;render();}
+function button(text,fn,style){const b=document.createElement('button');b.textContent=text;if(style)b.className=style;b.onclick=()=>action(fn);return b;}
+function render(){const list=$('list');list.replaceChildren();if(!cameras.length){const p=document.createElement('p');p.textContent='Todavía no hay cámaras configuradas.';list.append(p);}cameras.forEach((c,i)=>{
+ const card=document.createElement('article'),title=document.createElement('h2'),p=document.createElement('p');title.textContent=c.label;p.textContent=c.host+':'+c.port+c.path+' · '+(c.needs_verification?'Pendiente de verificación':'Verificada en el dispositivo');card.append(title,p);
+ card.append(button('Editar',async()=>edit(c)),button('Solicitar prueba',async()=>{await request('/api/test-request',{id:c.id,revision});status('Solicitud recibida. Confirma la prueba en la pantalla del reloj; todavía no se ha ejecutado.');}),button('Eliminar',async()=>{if(confirm('¿Eliminar esta cámara?')){accept(await request('/api/delete',{id:c.id,revision}));status('Cámara eliminada.');}},'danger'));
+ if(i>0)card.append(button('Subir',async()=>{const ids=cameras.map(x=>x.id);[ids[i-1],ids[i]]=[ids[i],ids[i-1]];accept(await request('/api/reorder',{revision,ids}));status('Orden guardado.');}));
+ list.append(card);
+});}
+function resetSecrets(){$('password').value='';$('username').value='';}
+function edit(c){editing=c?c.id:'';editRevision=revision;$('editTitle').textContent=c?'Editar cámara':'Añadir cámara';for(const k of ['label','host','path','port','mac','model'])$(k).value=c?c[k]:({path:'/stream2',port:554}[k]||'');$('onvif').value=c?c.onvif_uuid:'';$('enabled').checked=c?c.enabled:true;resetSecrets();$('username').required=!c;$('password').required=!c;$('editor').hidden=false;$('label').focus();}
+$('pairForm').onsubmit=e=>{e.preventDefault();action(async()=>{const code=$('code').value;try{const data=await request('/api/pair',{code});csrf=data.csrf;$('pairing').hidden=true;$('admin').hidden=false;accept(await request('/api/cameras'));status('Teléfono emparejado. La sesión se cierra tras 90 s sin actividad o 5 min en total.');}finally{$('code').value='';}});};
+$('new').onclick=()=>{if(!busy&&!ended)edit(null);};$('cancel').onclick=()=>{resetSecrets();$('editor').hidden=true;editing='';};
+$('reload').onclick=()=>action(async()=>{accept(await request('/api/cameras'));status('Lista actualizada.');});
+$('cameraForm').onsubmit=e=>{e.preventDefault();action(async()=>{const data={revision:editRevision,id:editing,label:$('label').value,host:$('host').value,port:Number($('port').value),path:$('path').value,username:$('username').value,password:$('password').value,mac:$('mac').value,onvif_uuid:$('onvif').value,model:$('model').value,enabled:$('enabled').checked};try{accept(await request('/api/save',data));$('editor').hidden=true;editing='';status('Guardado pendiente. No se usará hasta probar y guardar en el reloj.');}finally{data.password='';data.username='';resetSecrets();}});};
+$('close').onclick=()=>action(async()=>{await request('/api/close',{});ended=true;csrf='';cameras=[];resetSecrets();$('admin').hidden=true;status('Sesión cerrada. Abre otra desde el reloj cuando la necesites.');});
+addEventListener('pagehide',()=>{csrf='';resetSecrets();});
+</script></html>

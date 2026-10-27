@@ -1,0 +1,31 @@
+package org.x04g.home.adminweb;
+
+public final class PairingFixture {
+    private static int checks;
+    static void check(boolean value) { if (!value) throw new AssertionError("PAIR_" + checks); checks++; }
+    public static void main(String[] args) {
+        byte[] a = {10,20,30,40}, b = {10,20,30,41};
+        PairingSession s = new PairingSession();
+        String code = s.codeForDevice(); check(code.matches("[0-9]{8}"));
+        check(!s.authenticated("x04g_session=", a)); check(!s.csrfMatches(""));
+        check(s.pair(code, a) == PairingSession.Result.PAIRED);
+        String cookie = "x04g_session=" + s.sessionToken(), csrf = s.csrfToken();
+        check(s.sessionToken().length() == 64 && csrf.length() == 64);
+        check(s.authenticated(cookie, a)); check(!s.authenticated(cookie, b));
+        check(s.acceptsPeer(a) && !s.acceptsPeer(b));
+        check(s.csrfMatches(csrf) && !s.csrfMatches(csrf + "0"));
+        check(!s.authenticated(cookie + "; " + cookie, a));
+        check(s.authenticated("other=x; " + cookie, a));
+        check(s.pair(code, a) == PairingSession.Result.ALREADY_PAIRED);
+        check(s.codeForDevice().isEmpty()); s.close();
+        check(!s.authenticated(cookie, a) && !s.csrfMatches(csrf));
+        check(s.pair(code, a) == PairingSession.Result.LOCKED_OUT);
+        PairingSession other = new PairingSession();
+        check(!other.authenticated(cookie, a));
+        String wrong = other.codeForDevice().equals("00000000") ? "11111111" : "00000000";
+        for (int i = 0; i < 4; i++) check(other.pair(wrong, a) == PairingSession.Result.FAILED);
+        check(other.pair(wrong, a) == PairingSession.Result.LOCKED_OUT);
+        check(other.pair(other.codeForDevice(), a) == PairingSession.Result.LOCKED_OUT);
+        System.out.println("PAIRING_CHECKS=" + checks);
+    }
+}

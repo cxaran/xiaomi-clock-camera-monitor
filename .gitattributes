@@ -1,0 +1,6 @@
+# Preserve the exact bytes covered by source/patch/tool checksum manifests.
+* -text
+*.png binary
+*.gz binary
+*.zlib binary
+*.so binary

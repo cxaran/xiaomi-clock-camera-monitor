@@ -1,0 +1,25 @@
+{
+  "archive": {
+    "url": "https://android.googlesource.com/platform/prebuilts/android-emulator/+archive/734fb74db98890a73098df214ec0296e4c9fd096/linux-x86_64.tar.gz",
+    "bytes": 380875006,
+    "sha256": "fc5b77cc5085b567315290e91c16138a4521880906f515c345c7e4df3d72cf27"
+  },
+  "commit": "734fb74db98890a73098df214ec0296e4c9fd096",
+  "files": [
+    {
+      "name": "NOTICE.txt",
+      "bytes": 23410,
+      "sha256": "4488992c8b269881590f9a16a622dc36b1fbd10d581c160e138692f2c0827247"
+    },
+    {
+      "name": "emulator-headless",
+      "bytes": 787976,
+      "sha256": "0e116131bca47eb5e5a4ff3e785f86ca37a97bc5aa407c469b13b4ca58eed36a"
+    },
+    {
+      "name": "qemu/linux-x86_64/qemu-system-aarch64-headless",
+      "bytes": 40212856,
+      "sha256": "72fb1bddd990bfafa17e1721fb01727c52f465070928425286ec9cd0725a96a0"
+    }
+  ]
+}

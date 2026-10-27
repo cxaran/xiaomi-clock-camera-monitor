@@ -1,0 +1,75 @@
+package org.x04g.home.config;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+import javax.crypto.*;
+
+/** Offline fixtures ONLY. This .txt source is excluded from the Android APK sources. */
+public final class ConfigSelfTest {
+    private static int assertions;
+    private interface Checked {void run()throws Exception;}
+    private static void ok(boolean b){assertions++;if(!b)throw new AssertionError("fixture_failed");}
+    private static void rejects(ConfigException.Code code,Checked work)throws Exception {
+        try{work.run();throw new AssertionError("expected_rejection");}catch(ConfigException e){ok(e.code==code);}
+    }
+    private static CameraDraft draft(){CameraDraft d=new CameraDraft();d.label="Fixture camera";d.host="192.168.50.10";d.username="fixture_user";return d;}
+    public static void main(String[] args)throws Exception {
+        for(String host:new String[]{"192.168.50.10","10.0.0.2","172.16.1.4","camera.local","camera-fixture"})ok(ConfigRules.host(host).length()>0);
+        for(final String host:new String[]{"127.0.0.1","8.8.8.8","239.255.255.250","192.168.999.1","rtsp://camera.local","user@camera.local","camera.local:554","camera.local/path","camera.example.com","::1","bad host"})
+            rejects(ConfigException.Code.INVALID_INPUT,new Checked(){public void run()throws Exception{ConfigRules.host(host);}});
+        CameraConfig c=ConfigRules.validate(draft(),true);ok(!c.id.isEmpty());ok(c.hasPassword);
+        CameraDraft edit=new CameraDraft(c);edit.label="Renamed fixture";edit.host="192.168.50.11";ok(ConfigRules.validate(edit,true).id.equals(c.id));
+        for(final String path:new String[]{"stream2","//camera.local","/a\r\nb","/a?password=fixture","/x#fragment","/x%ZZ","/user@host"})
+            rejects(ConfigException.Code.INVALID_INPUT,new Checked(){public void run()throws Exception{CameraDraft d=draft();d.path=path;ConfigRules.validate(d,true);}});
+        for(final int port:new int[]{0,65536,-1})rejects(ConfigException.Code.INVALID_INPUT,new Checked(){public void run()throws Exception{CameraDraft d=draft();d.port=port;ConfigRules.validate(d,true);}});
+        ok(ConfigRules.mac("02-11-22-33-44-55").equals("02:11:22:33:44:55"));
+        rejects(ConfigException.Code.INVALID_INPUT,new Checked(){public void run()throws Exception{ConfigRules.mac("FF:FF:FF:FF:FF:FF");}});
+        final String uuid="12345678-1234-1234-1234-123456789abc";ok(ConfigRules.onvifUuid(uuid).equals("urn:uuid:"+uuid));
+        rejects(ConfigException.Code.INVALID_INPUT,new Checked(){public void run()throws Exception{ConfigRules.password(new char[]{'x','\n'});}});
+
+        KeyGenerator generator=KeyGenerator.getInstance("AES");generator.init(256);final SecretKey key=generator.generateKey();
+        VaultCipher cipher=new VaultCipher(new VaultCipher.Keys(){public SecretKey get(boolean create){return key;}});
+        byte[] fixture="OFFLINE_FIXTURE_NOT_A_REAL_CREDENTIAL".getBytes(StandardCharsets.UTF_8),sealed=cipher.seal(1,fixture),sealed2=cipher.seal(1,fixture);
+        ok(!Arrays.equals(sealed,sealed2));ok(Arrays.equals(fixture,cipher.open(sealed).plaintext));ok(cipher.open(sealed).revision==1);
+        final byte[] tampered=sealed.clone();tampered[tampered.length-1]^=1;
+        rejects(ConfigException.Code.CORRUPT,new Checked(){public void run()throws Exception{cipher.open(tampered);}});
+        final byte[] wrongRevision=sealed.clone();wrongRevision[19]=2;
+        rejects(ConfigException.Code.CORRUPT,new Checked(){public void run()throws Exception{cipher.open(wrongRevision);}});
+        rejects(ConfigException.Code.CORRUPT,new Checked(){public void run()throws Exception{cipher.open(new byte[5]);}});
+        VaultCipher missingKey=new VaultCipher(new VaultCipher.Keys(){public SecretKey get(boolean create)throws ConfigException{throw new ConfigException(ConfigException.Code.SECRET_UNAVAILABLE);}});
+        rejects(ConfigException.Code.SECRET_UNAVAILABLE,new Checked(){public void run()throws Exception{missingKey.open(sealed);}});
+
+        final File directory=Files.createTempDirectory("x04g-config-fixture-").toFile();
+        final AtomicConfigFile store=new AtomicConfigFile(directory);
+        store.locked(new AtomicConfigFile.Work<Void>(){public Void run()throws Exception{store.replace(sealed);return null;}});
+        final AtomicConfigFile fail=new AtomicConfigFile(directory,new AtomicConfigFile.BeforeCommit(){public void run()throws IOException{throw new IOException("fixture");}});
+        rejects(ConfigException.Code.STORAGE,new Checked(){public void run()throws Exception{fail.locked(new AtomicConfigFile.Work<Void>(){public Void run()throws Exception{fail.replace(sealed2);return null;}});}});
+        ok(Arrays.equals(sealed,store.locked(new AtomicConfigFile.Work<byte[]>(){public byte[] run()throws Exception{return store.read();}})));
+        ok(Arrays.equals(sealed,Files.readAllBytes(new File(directory,"cameras.v1.previous.enc").toPath())));
+        store.locked(new AtomicConfigFile.Work<Void>(){public Void run()throws Exception{store.replace(sealed2);return null;}});
+        ok(Arrays.equals(sealed2,store.locked(new AtomicConfigFile.Work<byte[]>(){public byte[] run()throws Exception{return store.read();}})));
+        ok(directory.listFiles(new FilenameFilter(){public boolean accept(File d,String name){return name.endsWith(".tmp");}}).length==0);
+        final File corruptDir=Files.createTempDirectory("x04g-config-empty-fixture-").toFile();
+        final AtomicConfigFile empty=new AtomicConfigFile(corruptDir);new FileOutputStream(new File(corruptDir,"cameras.v1.enc")).close();
+        rejects(ConfigException.Code.STORAGE,new Checked(){public void run()throws Exception{empty.locked(new AtomicConfigFile.Work<byte[]>(){public byte[] run()throws Exception{return empty.read();}});}});
+
+        final AtomicConfigFile first=new AtomicConfigFile(Files.createTempDirectory("x04g-config-concurrent-fixture-").toFile());
+        first.locked(new AtomicConfigFile.Work<Void>(){public Void run()throws Exception{first.replace(new byte[]{0});return null;}});
+        final AtomicReference<Throwable> failure=new AtomicReference<Throwable>();
+        Runnable increment=new Runnable(){public void run(){try{for(int i=0;i<8;i++)first.locked(new AtomicConfigFile.Work<Void>(){public Void run()throws Exception{byte[] b=first.read();b[0]++;first.replace(b);return null;}});}catch(Throwable e){failure.set(e);}}};
+        Thread a=new Thread(increment),b=new Thread(increment);a.start();b.start();a.join();b.join();ok(failure.get()==null);ok(first.locked(new AtomicConfigFile.Work<byte[]>(){public byte[] run()throws Exception{return first.read();}})[0]==16);
+
+        String xml="<s:Envelope xmlns:s='http://www.w3.org/2003/05/soap-envelope' xmlns:a='http://schemas.xmlsoap.org/ws/2004/08/addressing' xmlns:d='http://schemas.xmlsoap.org/ws/2005/04/discovery'><s:Header><a:RelatesTo>fixture-request</a:RelatesTo></s:Header><s:Body><d:ProbeMatches><d:ProbeMatch><a:EndpointReference><a:Address>urn:uuid:"+uuid+"</a:Address></a:EndpointReference><d:Scopes>onvif://www.onvif.org/mac/02:11:22:33:44:55</d:Scopes><d:XAddrs>http://192.168.50.10/onvif/device_service</d:XAddrs></d:ProbeMatch></d:ProbeMatches></s:Body></s:Envelope>";
+        List<OnvifDiscovery.Candidate> candidates=OnvifDiscovery.parseResponse(xml.getBytes(StandardCharsets.UTF_8),"192.168.50.10","fixture-request");ok(candidates.size()==1);ok(candidates.get(0).requiresAuthenticatedVerification);
+        CameraDraft identity=draft();identity.mac="02:11:22:33:44:55";ok(OnvifDiscovery.match(ConfigRules.validate(identity,true),candidates.get(0))==OnvifDiscovery.Match.ADVERTISED_MAC);
+        identity.onvifUuid="87654321-1234-1234-1234-123456789abc";ok(OnvifDiscovery.match(ConfigRules.validate(identity,true),candidates.get(0))==OnvifDiscovery.Match.NONE);
+        ok(OnvifDiscovery.parseResponse(xml.replace("http://192.168.50.10/","http://192.168.50.11/").getBytes(StandardCharsets.UTF_8),"192.168.50.10","fixture-request").isEmpty());
+        final byte[] doctype=("<!DOCTYPE x [<!ENTITY y SYSTEM 'file:///OFFLINE_FIXTURE_MUST_NOT_BE_READ'>]>"+xml).getBytes(StandardCharsets.UTF_8);
+        rejects(ConfigException.Code.DISCOVERY_FAILED,new Checked(){public void run()throws Exception{OnvifDiscovery.parseResponse(doctype,"192.168.50.10","fixture-request");}});
+        rejects(ConfigException.Code.DISCOVERY_FAILED,new Checked(){public void run()throws Exception{OnvifDiscovery.parseResponse(xml.getBytes(StandardCharsets.UTF_8),"192.168.50.10","other-request");}});
+        System.out.println("{\"pass\":true,\"assertions\":"+assertions+",\"network_executed\":false,\"android_runtime_executed\":false}");
+    }
+}

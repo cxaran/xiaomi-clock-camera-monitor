@@ -1,0 +1,73 @@
+package org.x04g.home.config;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.util.*;
+import javax.crypto.*;
+
+/** Offline integration fixtures: real JSON/file/cipher code with a synthetic host-only key. */
+public final class RepositorySelfTest {
+    private static int assertions;
+    private interface Checked {void run()throws Exception;}
+    private static void ok(boolean condition){assertions++;if(!condition)throw new AssertionError("repository_fixture_failed");}
+    private static void rejects(ConfigException.Code code,Checked work)throws Exception {
+        try{work.run();throw new AssertionError("expected_rejection");}catch(ConfigException e){ok(e.code==code);}
+    }
+    private static CameraDraft draft(String id){CameraDraft d=new CameraDraft();d.id=id;d.label="Offline fixture "+id;d.host="192.168.50.10";d.username="fixture_user";return d;}
+    private static ConfigRepository repository(File directory,VaultCipher cipher)throws Exception{return new ConfigRepository(new AtomicConfigFile(directory),cipher);}
+    private static InputStream stream(String json){return new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));}
+    private static String provision(String prefix){return "{\"schema_version\":1,\"cameras\":[{\"id\":\""+prefix+"\",\"label\":\"Offline fixture\",\"host\":\"192.168.50.10\",\"username\":\"fixture_user\",\"password\":\"OFFLINE_FIXTURE_ONLY\"}]}";}
+    public static void main(String[] args)throws Exception {
+        KeyGenerator generator=KeyGenerator.getInstance("AES");generator.init(256);final SecretKey key=generator.generateKey();
+        VaultCipher cipher=new VaultCipher(new VaultCipher.Keys(){public SecretKey get(boolean create){return key;}});
+        File directory=Files.createTempDirectory("x04g-repository-fixture-").toFile();
+        final ConfigRepository repo=repository(directory,cipher);ok(repo.load().revision==0);ok(repo.load().cameras.isEmpty());
+        char[] password="OFFLINE_FIXTURE_ONLY".toCharArray();
+        ConfigSnapshot first=repo.upsert(draft("fixtureA"),password,0);Arrays.fill(password,'\0');ok(first.revision==1);ok(first.cameras.size()==1);
+        ok(first.find("fixtureA").needsVerification);ok(first.find("fixtureA").verifiedAtMillis==0);ok(first.find("fixtureA").hasPassword);
+        char[] recovered=repo.readPassword("fixtureA");ok(Arrays.equals(recovered,"OFFLINE_FIXTURE_ONLY".toCharArray()));Arrays.fill(recovered,'\0');
+        byte[] sealed=Files.readAllBytes(new File(directory,"cameras.v1.enc").toPath());String envelope=new String(sealed,StandardCharsets.ISO_8859_1);
+        ok(!envelope.contains("OFFLINE_FIXTURE_ONLY"));ok(!envelope.contains("fixture_user"));ok(!envelope.contains("192.168.50.10"));
+        CameraDraft edit=new CameraDraft(first.find("fixtureA"));edit.label="Renamed fixture";edit.host="192.168.50.11";edit.needsVerification=false;edit.verifiedAtMillis=1234;
+        ConfigSnapshot second=repo.upsert(edit,null,1);ok(second.revision==2);ok(second.find("fixtureA").id.equals("fixtureA"));ok(!second.find("fixtureA").needsVerification);
+        recovered=repo.readPassword("fixtureA");ok(Arrays.equals(recovered,"OFFLINE_FIXTURE_ONLY".toCharArray()));Arrays.fill(recovered,'\0');
+        String redacted=repo.exportRedacted();ok(!redacted.contains("fixture_user"));ok(!redacted.contains("OFFLINE_FIXTURE_ONLY"));ok(redacted.contains("password_configured"));ok(!redacted.contains("ciphertext"));
+        rejects(ConfigException.Code.CONFLICT,new Checked(){public void run()throws Exception{repo.upsert(draft("fixtureA"),null,1);}});ok(repo.load().revision==2);
+        rejects(ConfigException.Code.INVALID_INPUT,new Checked(){public void run()throws Exception{repo.upsert(draft("newWithoutPassword"),null,2);}});ok(repo.load().revision==2);
+        rejects(ConfigException.Code.NOT_FOUND,new Checked(){public void run()throws Exception{repo.remove("absent",2);}});ok(repo.load().revision==2);
+        rejects(ConfigException.Code.CONFLICT,new Checked(){public void run()throws Exception{repo.importProvision(stream(provision("fixtureB")),2);}});
+        ConfigSnapshot third=repo.upsert(draft("fixtureB"),"SECOND_OFFLINE_FIXTURE".toCharArray(),2);ok(third.revision==3);
+        rejects(ConfigException.Code.INVALID_INPUT,new Checked(){public void run()throws Exception{repo.reorder(Arrays.asList("fixtureA","fixtureA"),3);}});ok(repo.load().revision==3);
+        ConfigSnapshot ordered=repo.reorder(Arrays.asList("fixtureB","fixtureA"),3);ok(ordered.revision==4);ok(ordered.cameras.get(0).id.equals("fixtureB"));
+        ConfigSnapshot removed=repo.remove("fixtureB",4);ok(removed.revision==5);ok(removed.find("fixtureB")==null);
+        rejects(ConfigException.Code.NOT_FOUND,new Checked(){public void run()throws Exception{repo.readPassword("fixtureB");}});
+        ConfigRepository reopened=repository(directory,cipher);ok(reopened.load().revision==5);ok(reopened.load().find("fixtureA").label.equals("Renamed fixture"));
+        // A failing commit preserves both the previous revision and the previous password.
+        final ConfigRepository failing=new ConfigRepository(new AtomicConfigFile(directory,new AtomicConfigFile.BeforeCommit(){public void run()throws IOException{throw new IOException("offline_injected");}}),cipher);
+        rejects(ConfigException.Code.STORAGE,new Checked(){public void run()throws Exception{failing.upsert(draft("fixtureA"),"NOT_COMMITTED".toCharArray(),5);}});
+        ok(repo.load().revision==5);recovered=repo.readPassword("fixtureA");ok(Arrays.equals(recovered,"OFFLINE_FIXTURE_ONLY".toCharArray()));Arrays.fill(recovered,'\0');
+        // Distinct repo instances still share the compare-and-swap revision under the file lock.
+        reopened.upsert(draft("fixtureC"),"THIRD_OFFLINE_FIXTURE".toCharArray(),5);
+        rejects(ConfigException.Code.CONFLICT,new Checked(){public void run()throws Exception{repo.upsert(draft("fixtureD"),"FOURTH_OFFLINE_FIXTURE".toCharArray(),5);}});ok(repo.load().revision==6);ok(repo.load().find("fixtureD")==null);
+
+        final ConfigRepository imported=repository(Files.createTempDirectory("x04g-import-fixture-").toFile(),cipher);
+        ConfigSnapshot importedState=imported.importProvision(stream(provision("imported")),0);ok(importedState.revision==1);ok(importedState.find("imported").needsVerification);ok(importedState.find("imported").verifiedAtMillis==0);
+        final ConfigRepository invalid=repository(Files.createTempDirectory("x04g-invalid-fixture-").toFile(),cipher);
+        rejects(ConfigException.Code.INVALID_INPUT,new Checked(){public void run()throws Exception{invalid.importProvision(stream(provision("bad").replace("\"schema_version\":1","\"schema_version\":1.5")),0);}});ok(invalid.load().revision==0);
+        rejects(ConfigException.Code.INVALID_INPUT,new Checked(){public void run()throws Exception{invalid.importProvision(stream(provision("bad").replace("\"label\":","\"unknown\":true,\"label\":")),0);}});ok(invalid.load().revision==0);
+        rejects(ConfigException.Code.INVALID_INPUT,new Checked(){public void run()throws Exception{invalid.importProvision(new ByteArrayInputStream(new byte[ConfigRules.MAX_IMPORT_BYTES+1]),0);}});ok(invalid.load().revision==0);
+        final CameraDraft duplicated=draft("fixtureD");duplicated.mac="02:11:22:33:44:55";repo.upsert(duplicated,"OFFLINE_FIXTURE_ONLY".toCharArray(),6);
+        final CameraDraft duplicated2=draft("fixtureE");duplicated2.mac=duplicated.mac;
+        rejects(ConfigException.Code.INVALID_INPUT,new Checked(){public void run()throws Exception{repo.upsert(duplicated2,"OFFLINE_FIXTURE_ONLY".toCharArray(),7);}});ok(repo.load().revision==7);
+        final ConfigRepository limited=repository(Files.createTempDirectory("x04g-limit-fixture-").toFile(),cipher);
+        for(int i=0;i<ConfigRules.MAX_CAMERAS;i++)limited.upsert(draft("limit"+i),"OFFLINE_FIXTURE_ONLY".toCharArray(),i);
+        rejects(ConfigException.Code.LIMIT,new Checked(){public void run()throws Exception{limited.upsert(draft("limit_extra"),"OFFLINE_FIXTURE_ONLY".toCharArray(),ConfigRules.MAX_CAMERAS);}});ok(limited.load().cameras.size()==ConfigRules.MAX_CAMERAS);
+        // Losing the key or tampering the authenticated file never silently resets the configuration.
+        final ConfigRepository noKey=repository(directory,new VaultCipher(new VaultCipher.Keys(){public SecretKey get(boolean create)throws ConfigException{throw new ConfigException(ConfigException.Code.SECRET_UNAVAILABLE);}}));
+        rejects(ConfigException.Code.SECRET_UNAVAILABLE,new Checked(){public void run()throws Exception{noKey.load();}});ok(repo.load().revision==7);
+        File current=new File(directory,"cameras.v1.enc");byte[] original=Files.readAllBytes(current.toPath());byte[] tampered=original.clone();tampered[tampered.length-1]^=1;Files.write(current.toPath(),tampered);
+        rejects(ConfigException.Code.CORRUPT,new Checked(){public void run()throws Exception{repo.load();}});ok(Arrays.equals(tampered,Files.readAllBytes(current.toPath())));
+        System.out.println("{\"pass\":true,\"assertions\":"+assertions+",\"network_executed\":false,\"android_keystore_executed\":false}");
+    }
+}

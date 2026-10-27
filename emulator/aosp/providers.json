@@ -1,0 +1,1004 @@
+{
+  "schema": "x04g.aosp-link-providers.v1",
+  "files": [
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/android.frameworks.bufferhub@1.0.so",
+      "source": {
+        "bytes": 94304,
+        "group": "oem_system",
+        "path": "system/lib/android.frameworks.bufferhub@1.0.so",
+        "sha256": "8228604f9461865dbcdfbb63d1dcffea45bea2470573420282cba54cc79d4b23"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/android.hardware.graphics.allocator@2.0.so",
+      "source": {
+        "bytes": 65840,
+        "group": "oem_system",
+        "path": "system/lib/android.hardware.graphics.allocator@2.0.so",
+        "sha256": "86bf8e81b1833238cc6b57cd7a670f261f785b7410211b08f7ddc23ff7a3a408"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/android.hardware.graphics.allocator@3.0.so",
+      "source": {
+        "bytes": 65848,
+        "group": "oem_system",
+        "path": "system/lib/android.hardware.graphics.allocator@3.0.so",
+        "sha256": "f8f98a8617dde9be70319dc53cf1cd795640b6a6650000f7cec25bdea35d62d8"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/android.hardware.graphics.common@1.0.so",
+      "source": {
+        "bytes": 14916,
+        "group": "oem_system",
+        "path": "system/lib/android.hardware.graphics.common@1.0.so",
+        "sha256": "5f1c63d5d3848e672663a3dce832296dbd1355061cb669bdbd4b2b4ced12031d"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/android.hardware.graphics.common@1.1.so",
+      "source": {
+        "bytes": 14928,
+        "group": "oem_system",
+        "path": "system/lib/android.hardware.graphics.common@1.1.so",
+        "sha256": "d6173c524b9f8b31a6bbeadf5a85fd078a8edb227d1d6d3f93ad775bf137f0a4"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/android.hardware.graphics.common@1.2.so",
+      "source": {
+        "bytes": 15036,
+        "group": "oem_system",
+        "path": "system/lib/android.hardware.graphics.common@1.2.so",
+        "sha256": "0ebce6d22f5ba7be8e48f6d3e9efa7d35c49c759e72077460f3200e6f3d7f4b2"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/android.hardware.graphics.mapper@2.0.so",
+      "source": {
+        "bytes": 70576,
+        "group": "oem_system",
+        "path": "system/lib/android.hardware.graphics.mapper@2.0.so",
+        "sha256": "23da339812b7773a73d83059fdd74af5de599cfdfda8a987ad500f709d462c3f"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/android.hardware.graphics.mapper@2.1.so",
+      "source": {
+        "bytes": 75196,
+        "group": "oem_system",
+        "path": "system/lib/android.hardware.graphics.mapper@2.1.so",
+        "sha256": "c472879aee75a66f1e3e1e22473bcdcf32561caa0b0497a3ff89776762a51cbd"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/android.hardware.graphics.mapper@3.0.so",
+      "source": {
+        "bytes": 75352,
+        "group": "oem_system",
+        "path": "system/lib/android.hardware.graphics.mapper@3.0.so",
+        "sha256": "4d66842e682fc94f3c204b1b60d05353cb2b6924ee1ee359c27668be1a833fd5"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/libbase.so",
+      "source": {
+        "bytes": 63216,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media/lib/libbase.so",
+        "sha256": "8d588b3a1b6fe456fdec9d4f97ba05794df71b22dee39dec7386722a91a65419"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/libbinderthreadstate.so",
+      "source": {
+        "bytes": 15472,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media/lib/libbinderthreadstate.so",
+        "sha256": "8081a51b4cc0967aaf5dd02926ef47bb9b39fb98892eba35881c8f15ccfd786f"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/libc++.so",
+      "source": {
+        "bytes": 580740,
+        "group": "oem_system",
+        "path": "system/apex/com.android.conscrypt/lib/libc++.so",
+        "sha256": "f97c25751d70b1d17f14f96842dc2cf1300e218eb824636ccb30b869f4c9187e"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/libc.so",
+      "source": {
+        "bytes": 987244,
+        "group": "oem_system",
+        "path": "system/apex/com.android.runtime.release/lib/bionic/libc.so",
+        "sha256": "8c5cdedff3c207281c229e5eb1d27480a75e426f4ef04c1a08af6c755877be4a"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/libcgrouprc.so",
+      "source": {
+        "bytes": 15632,
+        "group": "oem_system",
+        "path": "system/lib/libcgrouprc.so",
+        "sha256": "e2e5d0dd9b9ac909a3c6396616b330912358a4d00adf309bc0fe60f27e03abbe"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/libcutils.so",
+      "source": {
+        "bytes": 57968,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media/lib/libcutils.so",
+        "sha256": "763f189ba3da2faba57e22a08094b0f852935514e5b3db8fd5802ae37ad89bff"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/libdl.so",
+      "source": {
+        "bytes": 14024,
+        "group": "oem_system",
+        "path": "system/apex/com.android.runtime.release/lib/bionic/libdl.so",
+        "sha256": "1bae8aa97d619e8c3965457b588f4a0495f913b0ec618f7a3346b54fb57a1578"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/libdl_android.so",
+      "source": {
+        "bytes": 9944,
+        "group": "oem_system",
+        "path": "system/lib/libdl_android.so",
+        "sha256": "5dd807e18788abe2c1bb081ec3aafe5c97e1389b8513bd8ef5fb3679ed61e36a"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/libhardware.so",
+      "source": {
+        "bytes": 15276,
+        "group": "oem_system",
+        "path": "system/lib/libhardware.so",
+        "sha256": "02c0f62ec5c7796ab2c2d4ddec0320e8d32bfcb49bc09f3af32c9cf531e9a0b9"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/libhidlbase.so",
+      "source": {
+        "bytes": 491532,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media/lib/libhidlbase.so",
+        "sha256": "779a9cd9eca682619d75705c0c9e2e7ca5b654e968b11e99dca49889a6067a5b"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/libhidltransport.so",
+      "source": {
+        "bytes": 14868,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media/lib/libhidltransport.so",
+        "sha256": "85ad29184993d60dd889501f4bdc4efe69c77f349fe3607a399a54c0bebefc87"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/libhwbinder.so",
+      "source": {
+        "bytes": 14868,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media/lib/libhwbinder.so",
+        "sha256": "050aa3f9ba61aae3947ce0141c9e1532521f52cd0924d561613cff4f91481090"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/liblog.so",
+      "source": {
+        "bytes": 72280,
+        "group": "oem_system",
+        "path": "system/lib/liblog.so",
+        "sha256": "2b1b44f1b5207f56c1e3a5f17b704f39ef90430c29b0c5fe2a5b1748292ae06b"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/libm.so",
+      "source": {
+        "bytes": 141028,
+        "group": "oem_system",
+        "path": "system/apex/com.android.runtime.release/lib/bionic/libm.so",
+        "sha256": "7403fc103c08191a912fd5494b41387891c2ad463a78bcde011b15ba77e6994a"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/libnativewindow.so",
+      "source": {
+        "bytes": 23960,
+        "group": "oem_system",
+        "path": "system/lib/libnativewindow.so",
+        "sha256": "bed175b39efc34f769a8463cb2d4eff1f837358c2974482992d7637a596bf2c6"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/libprocessgroup.so",
+      "source": {
+        "bytes": 186396,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media/lib/libprocessgroup.so",
+        "sha256": "bbb086a5c09da57b37b345d9a58f1bed3f910655952c751601d7b890d15ae734"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/libsync.so",
+      "source": {
+        "bytes": 15144,
+        "group": "oem_system",
+        "path": "system/lib/libsync.so",
+        "sha256": "75a3ca28abd115a227e61e825541dcd4f306f3cdc5201483f0868d14f5923fc9"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/libui.so",
+      "source": {
+        "bytes": 147040,
+        "group": "oem_system",
+        "path": "system/lib/libui.so",
+        "sha256": "765cdc64257d3ffb71e6f4230900bb6b2ba9763cf08c7357af04b4d49a1af310"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/libutils.so",
+      "source": {
+        "bytes": 89280,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media/lib/libutils.so",
+        "sha256": "7aeebd1d9ad731e09209691f695ce539ae047190f594ad5768e9690135d62693"
+      }
+    },
+    {
+      "destination": ".private/graficos32_stockcore_lectura/lib/libvndksupport.so",
+      "source": {
+        "bytes": 15260,
+        "group": "oem_system",
+        "path": "system/lib/libvndksupport.so",
+        "sha256": "fc05feaebd61fc0a60be32a59a42867f6cfef15e0898bab1eb86b2f11a9532da"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/android.hardware.bluetooth@1.0.so",
+      "source": {
+        "bytes": 101608,
+        "group": "oem_system",
+        "path": "system/lib/vndk-29/android.hardware.bluetooth@1.0.so",
+        "sha256": "25f821a400916b05f15f16994e3fdca7516f0e5b8d97de347eb9ce401ef140d9"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/ld-android.so",
+      "source": {
+        "bytes": 9484,
+        "group": "oem_system",
+        "path": "system/lib/ld-android.so",
+        "sha256": "748079662ed7fd802a11044cfb3bf63684e04fe3297cc478c51cb7503b48b24c"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/libbase.so",
+      "source": {
+        "bytes": 63220,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media.swcodec/lib/libbase.so",
+        "sha256": "abc9f466802e6511316af32b32a59e63f46d47b29923b051a93dfe2b16d7dee6"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/libbinderthreadstate.so",
+      "source": {
+        "bytes": 15476,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media.swcodec/lib/libbinderthreadstate.so",
+        "sha256": "efef808d23f3a900ce0143e73e937c25a71b4d9ebf03f7658333a1a7afe4d5fc"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/libc++.so",
+      "source": {
+        "bytes": 580768,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media.swcodec/lib/libc++.so",
+        "sha256": "8da1e8d70c296a821a70b29cbfc610081f2bbf091e15bf457972ac292ab15fec"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/libc.so",
+      "source": {
+        "bytes": 987244,
+        "group": "oem_system",
+        "path": "system/apex/com.android.runtime.release/lib/bionic/libc.so",
+        "sha256": "8c5cdedff3c207281c229e5eb1d27480a75e426f4ef04c1a08af6c755877be4a"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/libcgrouprc.so",
+      "source": {
+        "bytes": 15632,
+        "group": "oem_system",
+        "path": "system/lib/libcgrouprc.so",
+        "sha256": "e2e5d0dd9b9ac909a3c6396616b330912358a4d00adf309bc0fe60f27e03abbe"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/libchrome.so",
+      "source": {
+        "bytes": 903440,
+        "group": "oem_system",
+        "path": "system/lib/libchrome.so",
+        "sha256": "808c29020e5307f82d62a078b6ea0414fd8af548d1aab467dd026e707f6e5401"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/libcutils.so",
+      "source": {
+        "bytes": 57872,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media.swcodec/lib/libcutils.so",
+        "sha256": "659c5c5a7df50b5781d041291c989c80df6e4f3c7dcc24ed5660db8fb534b0ef"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/libdl.so",
+      "source": {
+        "bytes": 14024,
+        "group": "oem_system",
+        "path": "system/apex/com.android.runtime.release/lib/bionic/libdl.so",
+        "sha256": "1bae8aa97d619e8c3965457b588f4a0495f913b0ec618f7a3346b54fb57a1578"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/libdl_android.so",
+      "source": {
+        "bytes": 9944,
+        "group": "oem_system",
+        "path": "system/lib/libdl_android.so",
+        "sha256": "5dd807e18788abe2c1bb081ec3aafe5c97e1389b8513bd8ef5fb3679ed61e36a"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/libevent.so",
+      "source": {
+        "bytes": 285800,
+        "group": "oem_system",
+        "path": "system/lib/vndk-29/libevent.so",
+        "sha256": "02d3254fe04639bf6b77ee9b282409888802d32474aa9dcc1106834b388c96f4"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/libhidlbase.so",
+      "source": {
+        "bytes": 491488,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media.swcodec/lib/libhidlbase.so",
+        "sha256": "398e12aeab008c3bb0a80d2323f82d8de4d5f098619578c4fb463c48030da64f"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/libhidltransport.so",
+      "source": {
+        "bytes": 14868,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media.swcodec/lib/libhidltransport.so",
+        "sha256": "b117ba80d3431764e947cc82ae3c0013c91500a040ba928e179e9c63c48083d5"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/libhwbinder.so",
+      "source": {
+        "bytes": 14868,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media.swcodec/lib/libhwbinder.so",
+        "sha256": "1286819e82eda563ffd40f54280a003037a9ac59497ade6a9dd2a6a89d6bc318"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/liblog.so",
+      "source": {
+        "bytes": 72280,
+        "group": "oem_system",
+        "path": "system/lib/liblog.so",
+        "sha256": "2b1b44f1b5207f56c1e3a5f17b704f39ef90430c29b0c5fe2a5b1748292ae06b"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/libm.so",
+      "source": {
+        "bytes": 141028,
+        "group": "oem_system",
+        "path": "system/apex/com.android.runtime.release/lib/bionic/libm.so",
+        "sha256": "7403fc103c08191a912fd5494b41387891c2ad463a78bcde011b15ba77e6994a"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/libprocessgroup.so",
+      "source": {
+        "bytes": 186404,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media.swcodec/lib/libprocessgroup.so",
+        "sha256": "8c8bd2f9f80943557f05325b212002862b8f14d7be5822ea707d622328ab463b"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/libutils.so",
+      "source": {
+        "bytes": 89288,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media.swcodec/lib/libutils.so",
+        "sha256": "37b50d16cce7c020711b2fb9e2a279b34d29d282ff8d18f79c08e5c9100a035d"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/lib/libvndksupport.so",
+      "source": {
+        "bytes": 15260,
+        "group": "oem_system",
+        "path": "system/lib/libvndksupport.so",
+        "sha256": "fc05feaebd61fc0a60be32a59a42867f6cfef15e0898bab1eb86b2f11a9532da"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/runtime_lib/android.hardware.bluetooth@1.0.so",
+      "source": {
+        "bytes": 101608,
+        "group": "oem_system",
+        "path": "system/lib/vndk-29/android.hardware.bluetooth@1.0.so",
+        "sha256": "25f821a400916b05f15f16994e3fdca7516f0e5b8d97de347eb9ce401ef140d9"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/runtime_lib/libbase.so",
+      "source": {
+        "bytes": 63220,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media.swcodec/lib/libbase.so",
+        "sha256": "abc9f466802e6511316af32b32a59e63f46d47b29923b051a93dfe2b16d7dee6"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/runtime_lib/libbinderthreadstate.so",
+      "source": {
+        "bytes": 15476,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media.swcodec/lib/libbinderthreadstate.so",
+        "sha256": "efef808d23f3a900ce0143e73e937c25a71b4d9ebf03f7658333a1a7afe4d5fc"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/runtime_lib/libc++.so",
+      "source": {
+        "bytes": 580768,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media.swcodec/lib/libc++.so",
+        "sha256": "8da1e8d70c296a821a70b29cbfc610081f2bbf091e15bf457972ac292ab15fec"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/runtime_lib/libc.so",
+      "source": {
+        "bytes": 987244,
+        "group": "oem_system",
+        "path": "system/apex/com.android.runtime.release/lib/bionic/libc.so",
+        "sha256": "8c5cdedff3c207281c229e5eb1d27480a75e426f4ef04c1a08af6c755877be4a"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/runtime_lib/libcgrouprc.so",
+      "source": {
+        "bytes": 15632,
+        "group": "oem_system",
+        "path": "system/lib/libcgrouprc.so",
+        "sha256": "e2e5d0dd9b9ac909a3c6396616b330912358a4d00adf309bc0fe60f27e03abbe"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/runtime_lib/libchrome.so",
+      "source": {
+        "bytes": 903440,
+        "group": "oem_system",
+        "path": "system/lib/libchrome.so",
+        "sha256": "808c29020e5307f82d62a078b6ea0414fd8af548d1aab467dd026e707f6e5401"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/runtime_lib/libcutils.so",
+      "source": {
+        "bytes": 57872,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media.swcodec/lib/libcutils.so",
+        "sha256": "659c5c5a7df50b5781d041291c989c80df6e4f3c7dcc24ed5660db8fb534b0ef"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/runtime_lib/libdl.so",
+      "source": {
+        "bytes": 14024,
+        "group": "oem_system",
+        "path": "system/apex/com.android.runtime.release/lib/bionic/libdl.so",
+        "sha256": "1bae8aa97d619e8c3965457b588f4a0495f913b0ec618f7a3346b54fb57a1578"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/runtime_lib/libdl_android.so",
+      "source": {
+        "bytes": 9944,
+        "group": "oem_system",
+        "path": "system/lib/libdl_android.so",
+        "sha256": "5dd807e18788abe2c1bb081ec3aafe5c97e1389b8513bd8ef5fb3679ed61e36a"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/runtime_lib/libevent.so",
+      "source": {
+        "bytes": 285800,
+        "group": "oem_system",
+        "path": "system/lib/vndk-29/libevent.so",
+        "sha256": "02d3254fe04639bf6b77ee9b282409888802d32474aa9dcc1106834b388c96f4"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/runtime_lib/libhidlbase.so",
+      "source": {
+        "bytes": 491488,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media.swcodec/lib/libhidlbase.so",
+        "sha256": "398e12aeab008c3bb0a80d2323f82d8de4d5f098619578c4fb463c48030da64f"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/runtime_lib/libhidltransport.so",
+      "source": {
+        "bytes": 14868,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media.swcodec/lib/libhidltransport.so",
+        "sha256": "b117ba80d3431764e947cc82ae3c0013c91500a040ba928e179e9c63c48083d5"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/runtime_lib/libhwbinder.so",
+      "source": {
+        "bytes": 14868,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media.swcodec/lib/libhwbinder.so",
+        "sha256": "1286819e82eda563ffd40f54280a003037a9ac59497ade6a9dd2a6a89d6bc318"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/runtime_lib/liblog.so",
+      "source": {
+        "bytes": 72280,
+        "group": "oem_system",
+        "path": "system/lib/liblog.so",
+        "sha256": "2b1b44f1b5207f56c1e3a5f17b704f39ef90430c29b0c5fe2a5b1748292ae06b"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/runtime_lib/libm.so",
+      "source": {
+        "bytes": 141028,
+        "group": "oem_system",
+        "path": "system/apex/com.android.runtime.release/lib/bionic/libm.so",
+        "sha256": "7403fc103c08191a912fd5494b41387891c2ad463a78bcde011b15ba77e6994a"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/runtime_lib/libprocessgroup.so",
+      "source": {
+        "bytes": 186404,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media.swcodec/lib/libprocessgroup.so",
+        "sha256": "8c8bd2f9f80943557f05325b212002862b8f14d7be5822ea707d622328ab463b"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/runtime_lib/libutils.so",
+      "source": {
+        "bytes": 89288,
+        "group": "oem_system",
+        "path": "system/apex/com.android.media.swcodec/lib/libutils.so",
+        "sha256": "37b50d16cce7c020711b2fb9e2a279b34d29d282ff8d18f79c08e5c9100a035d"
+      }
+    },
+    {
+      "destination": ".private/bluetooth29_build/prebuilt_link/runtime_lib/libvndksupport.so",
+      "source": {
+        "bytes": 15260,
+        "group": "oem_system",
+        "path": "system/lib/libvndksupport.so",
+        "sha256": "fc05feaebd61fc0a60be32a59a42867f6cfef15e0898bab1eb86b2f11a9532da"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/vndk-sp-29/libbase.so",
+      "source": {
+        "bytes": 83552,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-sp-29/libbase.so",
+        "sha256": "9cbead60e47da43627211c9bd8564e7e9735624c4a3a9a9a772be1eb3371ac76"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/vndk-sp-29/libcutils.so",
+      "source": {
+        "bytes": 73712,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-sp-29/libcutils.so",
+        "sha256": "4e820618915250caa52029fc859ad1c5c091857b7cd995e1195f83d102daad02"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/vndk-sp-29/libhidlbase.so",
+      "source": {
+        "bytes": 771744,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-sp-29/libhidlbase.so",
+        "sha256": "e52b7dd404e03e9d3bafab15d390e7af47e43606d4cebeeafe21d614d01d1d10"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/vndk-sp-29/libhidltransport.so",
+      "source": {
+        "bytes": 14896,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-sp-29/libhidltransport.so",
+        "sha256": "81f85fb055b2dd5572a9b4a1126fc5fa8de8fbaabfe32268721649f4a4fa4b87"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/liblog.so",
+      "source": {
+        "bytes": 92248,
+        "group": "sdk_system",
+        "path": "system/lib64/liblog.so",
+        "sha256": "98fc36f851044f4b8e922588513db162c2e4c165287c26df69646739334e8044"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/vndk-29/libnl.so",
+      "source": {
+        "bytes": 137680,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-29/libnl.so",
+        "sha256": "134f3543f30295b11dec6a5e0e81d9f40f7517cf009d60331de067dd06ccbbe5"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/vndk-sp-29/libutils.so",
+      "source": {
+        "bytes": 117416,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-sp-29/libutils.so",
+        "sha256": "5c5be8715cabc2ff0e43e51fccf29dee94510edd0f1bbfea4f31fbbf7d3b9f24"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/vendor/lib64/libwifi-hal.so",
+      "source": {
+        "bytes": 60200,
+        "group": "sdk_vendor",
+        "path": "lib64/libwifi-hal.so",
+        "sha256": "2ebddf9f95ddba69e8b0bd82d8f1359b5f143f380d9f4d18e8fab2129e09fcb5"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/vndk-29/libwifi-system-iface.so",
+      "source": {
+        "bytes": 24064,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-29/libwifi-system-iface.so",
+        "sha256": "76879015ec2af00def305e2962da9d2c24e8c0e4311e918901d0b0692ee253ce"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/vndk-29/android.hardware.wifi@1.0.so",
+      "source": {
+        "bytes": 1331288,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-29/android.hardware.wifi@1.0.so",
+        "sha256": "e05536aec9177e4223b9f02aaaf0f772d4a7143fb2d85769f74bddc2777caa0f"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/vndk-29/android.hardware.wifi@1.1.so",
+      "source": {
+        "bytes": 243152,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-29/android.hardware.wifi@1.1.so",
+        "sha256": "3189588b9e65ba1ca7632af59371505a38731293e46b18bfb187546d89d5f6fe"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/vndk-29/android.hardware.wifi@1.2.so",
+      "source": {
+        "bytes": 705392,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-29/android.hardware.wifi@1.2.so",
+        "sha256": "a47677b64734b97851fca9690119e41721888c164f1c749441c6b3130001d069"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/vndk-29/android.hardware.wifi@1.3.so",
+      "source": {
+        "bytes": 417672,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-29/android.hardware.wifi@1.3.so",
+        "sha256": "8238f6c0aef09d4a602cde80063d1b0d1c99f2daf16d5fe7c665f1aac4356811"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/vndk-sp-29/libc++.so",
+      "source": {
+        "bytes": 841896,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-sp-29/libc++.so",
+        "sha256": "4c80fa041690e4505a3c7119eb790123e886886ce91a4b0143b726b0126385a3"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/apex/com.android.runtime.release/lib64/bionic/libc.so",
+      "source": {
+        "bytes": 1230880,
+        "group": "sdk_system",
+        "path": "system/apex/com.android.runtime.debug/lib64/bionic/libc.so",
+        "sha256": "2cf53c5dc576af5b87982b10e0bb80b8fbab3c20a6747a66be91640f9f791ac4"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/apex/com.android.runtime.release/lib64/bionic/libm.so",
+      "source": {
+        "bytes": 229376,
+        "group": "sdk_system",
+        "path": "system/apex/com.android.runtime.debug/lib64/bionic/libm.so",
+        "sha256": "2535e2cf8b494eecae1adf4080c4d1e90e5785aa6678cbde26cecf766ba4155d"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/apex/com.android.runtime.release/lib64/bionic/libdl.so",
+      "source": {
+        "bytes": 14016,
+        "group": "sdk_system",
+        "path": "system/apex/com.android.runtime.debug/lib64/bionic/libdl.so",
+        "sha256": "975b5f56014aee297b0c4875d7c377c9b09368d7f74fbdf1d72a20f806da0960"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/vndk-sp-29/libhwbinder.so",
+      "source": {
+        "bytes": 14896,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-sp-29/libhwbinder.so",
+        "sha256": "5bad2335cbc7be6aad6f569e63c9675d93bfd603948090b849b260b8640b7c54"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/libvndksupport.so",
+      "source": {
+        "bytes": 15648,
+        "group": "sdk_system",
+        "path": "system/lib64/libvndksupport.so",
+        "sha256": "d1aec43e0f03b8c4e25b8e281a64c34b1ebff64948061ad54a499532479f005b"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/vndk-sp-29/libbinderthreadstate.so",
+      "source": {
+        "bytes": 23896,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-sp-29/libbinderthreadstate.so",
+        "sha256": "243562a1904e595ac27976c3df1b391d2e3bfa7cd72253dfa86b47c855d63711"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/libc++.so",
+      "source": {
+        "bytes": 841888,
+        "group": "sdk_system",
+        "path": "system/lib64/libc++.so",
+        "sha256": "b80e3e846106faaa105ea5b1083be65a26124ddbe6ffadfa47f3fc6621ed357f"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/vndk-sp-29/libprocessgroup.so",
+      "source": {
+        "bytes": 251216,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-sp-29/libprocessgroup.so",
+        "sha256": "38428d4be4ead905609806b2f9ebc745519ef7a84eb733299afb3566023b252c"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/libdl_android.so",
+      "source": {
+        "bytes": 10192,
+        "group": "sdk_system",
+        "path": "system/lib64/libdl_android.so",
+        "sha256": "e54a88cb3256ad2b7918773f28207fa93ebbfa02cace176f565834482398dbc7"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/libcgrouprc.so",
+      "source": {
+        "bytes": 20056,
+        "group": "sdk_system",
+        "path": "system/lib64/libcgrouprc.so",
+        "sha256": "c42262d38d2529085c699b3307c553a6b993b79a39c2731b3d318ca48199f9be"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/tree/system/lib64/libbase.so",
+      "source": {
+        "bytes": 83552,
+        "group": "sdk_system",
+        "path": "system/lib64/libbase.so",
+        "sha256": "8157df5d792e2b6f8877bcdb901405c43b0ac2b1b9559586f86123a18ffcce02"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/lib/android.hardware.wifi@1.0.so",
+      "source": {
+        "bytes": 1331288,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-29/android.hardware.wifi@1.0.so",
+        "sha256": "e05536aec9177e4223b9f02aaaf0f772d4a7143fb2d85769f74bddc2777caa0f"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/lib/android.hardware.wifi@1.1.so",
+      "source": {
+        "bytes": 243152,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-29/android.hardware.wifi@1.1.so",
+        "sha256": "3189588b9e65ba1ca7632af59371505a38731293e46b18bfb187546d89d5f6fe"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/lib/android.hardware.wifi@1.2.so",
+      "source": {
+        "bytes": 705392,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-29/android.hardware.wifi@1.2.so",
+        "sha256": "a47677b64734b97851fca9690119e41721888c164f1c749441c6b3130001d069"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/lib/android.hardware.wifi@1.3.so",
+      "source": {
+        "bytes": 417672,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-29/android.hardware.wifi@1.3.so",
+        "sha256": "8238f6c0aef09d4a602cde80063d1b0d1c99f2daf16d5fe7c665f1aac4356811"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/lib/libbase.so",
+      "source": {
+        "bytes": 83552,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-sp-29/libbase.so",
+        "sha256": "9cbead60e47da43627211c9bd8564e7e9735624c4a3a9a9a772be1eb3371ac76"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/lib/libc++.so",
+      "source": {
+        "bytes": 841896,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-sp-29/libc++.so",
+        "sha256": "4c80fa041690e4505a3c7119eb790123e886886ce91a4b0143b726b0126385a3"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/lib/libc.so",
+      "source": {
+        "bytes": 1230880,
+        "group": "sdk_system",
+        "path": "system/apex/com.android.runtime.debug/lib64/bionic/libc.so",
+        "sha256": "2cf53c5dc576af5b87982b10e0bb80b8fbab3c20a6747a66be91640f9f791ac4"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/lib/libcutils.so",
+      "source": {
+        "bytes": 73712,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-sp-29/libcutils.so",
+        "sha256": "4e820618915250caa52029fc859ad1c5c091857b7cd995e1195f83d102daad02"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/lib/libdl.so",
+      "source": {
+        "bytes": 14016,
+        "group": "sdk_system",
+        "path": "system/apex/com.android.runtime.debug/lib64/bionic/libdl.so",
+        "sha256": "975b5f56014aee297b0c4875d7c377c9b09368d7f74fbdf1d72a20f806da0960"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/lib/libhidlbase.so",
+      "source": {
+        "bytes": 771744,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-sp-29/libhidlbase.so",
+        "sha256": "e52b7dd404e03e9d3bafab15d390e7af47e43606d4cebeeafe21d614d01d1d10"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/lib/libhidltransport.so",
+      "source": {
+        "bytes": 14896,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-sp-29/libhidltransport.so",
+        "sha256": "81f85fb055b2dd5572a9b4a1126fc5fa8de8fbaabfe32268721649f4a4fa4b87"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/lib/liblog.so",
+      "source": {
+        "bytes": 92248,
+        "group": "sdk_system",
+        "path": "system/lib64/liblog.so",
+        "sha256": "98fc36f851044f4b8e922588513db162c2e4c165287c26df69646739334e8044"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/lib/libm.so",
+      "source": {
+        "bytes": 229376,
+        "group": "sdk_system",
+        "path": "system/apex/com.android.runtime.debug/lib64/bionic/libm.so",
+        "sha256": "2535e2cf8b494eecae1adf4080c4d1e90e5785aa6678cbde26cecf766ba4155d"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/lib/libnl.so",
+      "source": {
+        "bytes": 137680,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-29/libnl.so",
+        "sha256": "134f3543f30295b11dec6a5e0e81d9f40f7517cf009d60331de067dd06ccbbe5"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/lib/libutils.so",
+      "source": {
+        "bytes": 117416,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-sp-29/libutils.so",
+        "sha256": "5c5be8715cabc2ff0e43e51fccf29dee94510edd0f1bbfea4f31fbbf7d3b9f24"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/lib/libwifi-hal.so",
+      "source": {
+        "bytes": 60200,
+        "group": "sdk_vendor",
+        "path": "lib64/libwifi-hal.so",
+        "sha256": "2ebddf9f95ddba69e8b0bd82d8f1359b5f143f380d9f4d18e8fab2129e09fcb5"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/lib/libwifi-system-iface.so",
+      "source": {
+        "bytes": 24064,
+        "group": "sdk_system",
+        "path": "system/lib64/vndk-29/libwifi-system-iface.so",
+        "sha256": "76879015ec2af00def305e2962da9d2c24e8c0e4311e918901d0b0692ee253ce"
+      }
+    },
+    {
+      "destination": ".private/wifi_hal_mode3_build/prebuilt02/bin/linker64",
+      "source": {
+        "bytes": 1594504,
+        "group": "sdk_system",
+        "path": "system/apex/com.android.runtime.debug/bin/linker64",
+        "sha256": "9a49cec71b20f953b0ce395a014b09d0c6d381688b9c516edec64ec402c7ee96"
+      }
+    }
+  ]
+}

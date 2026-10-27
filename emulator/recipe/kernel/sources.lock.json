@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "kernel_commit": "dbec1739ed7cea6d62ba604e51ac87a54335153e",
+  "base_tree": "d7b186ee8001d2d5ace2b9427fa0408c7a13ba5c",
+  "patched_tree": "db813761ee83e8168141653dfc13ad5f46bfbb22",
+  "patch_sha256": "d584075699d0d4ed02e4742e9a2bbb29328c8aaf8fc427e81346f0cb513ee9e4",
+  "config_sha256": "2bd44576a8766f2875fe5c5bba59a03c5e77834cd75d671f00572525739d57d9",
+  "archives": [
+    {
+      "name": "kernel",
+      "url": "https://android.googlesource.com/kernel/goldfish/+archive/dbec1739ed7cea6d62ba604e51ac87a54335153e.tar.gz",
+      "bytes": 161789619,
+      "sha256": "2aaae822834d0b07d7f59e602ead3adb5e1dd2aeeabd81e588d543673b87af63",
+      "expected_git_tree": "d7b186ee8001d2d5ace2b9427fa0408c7a13ba5c"
+    },
+    {
+      "name": "clang_r365631c",
+      "url": "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/252aba16f513a857bc923172f67b0e55e23de35f/clang-r365631c.tar.gz",
+      "bytes": 308752572,
+      "sha256": "637c49c1cc1f2acdbd365d3541e50b3acb14783ac28b41dd3677536654b7f733",
+      "expected_git_tree": "4e2966fedec990aed4c6a80616df4bd8320bb044"
+    },
+    {
+      "name": "binutils_arm64",
+      "url": "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/+archive/c2885c755bd673681f24fdaf09f2886fbbdc9775.tar.gz",
+      "bytes": 30230956,
+      "sha256": "46dd8a9ae152fca094936ab5f2b0bea23f3e0b1dc9150f6b4e97372dfd8a6fc9",
+      "expected_git_tree": "87daadceaaee92d16075d62ce7ff675eeda2ff17"
+    }
+  ],
+  "build": {
+    "ARCH": "arm64",
+    "CLANG_TRIPLE": "aarch64-linux-gnu-",
+    "LOCALVERSION": "-x04g-input07",
+    "KBUILD_BUILD_USER": "builder",
+    "KBUILD_BUILD_HOST": "localhost",
+    "KBUILD_BUILD_TIMESTAMP": "Thu Jan 1 00:00:00 UTC 1970",
+    "KBUILD_BUILD_VERSION": "1"
+  },
+  "host_dependencies": [
+    "Linux x86_64, glibc (WSL2 Ubuntu)",
+    "Python>=3.12",
+    "GNU make>=4.3",
+    "GCC native with libc development headers (not Android clang)",
+    "git",
+    "bc",
+    "bison",
+    "flex",
+    "libssl-dev",
+    "zlib1g-dev"
+  ],
+  "prebuilt": {
+    "path": "Image.gz",
+    "sha256": "0623d8095e8651aa066af8b944de35f974c15991538312989e86769b67d9632c",
+    "bytes": 6084017,
+    "kernel_release": "4.14.175-x04g-input07"
+  }
+}

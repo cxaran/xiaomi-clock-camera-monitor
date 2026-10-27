@@ -1,0 +1,46 @@
+package org.x04g.home.ui.adminweb;
+
+import java.util.EnumMap;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.DecodeHintType;
+import com.google.zxing.RGBLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.qrcode.QRCodeReader;
+import org.x04g.home.qr.QrCode;
+import org.x04g.home.qr.QrSegment;
+
+/** Public synthetic LAN URLs only; independent QR decoding, no network or Android. */
+public final class WebAdminQrFixture {
+    private static int checks;
+    private interface Check { void run(); }
+    private static void yes(boolean value) { checks++; if (!value) throw new AssertionError("qr_fixture_" + checks); }
+    private static void rejects(Check code) {
+        boolean rejected = false;
+        try { code.run(); } catch (IllegalArgumentException expected) { rejected = true; }
+        yes(rejected);
+    }
+    public static void main(String[] ignored) throws Exception {
+        for (String url : new String[] { "http://10.203.11.42:32181/", "http://172.16.1.2:12345/", "http://192.168.255.254:65535/" }) {
+            yes(WebAdminRules.publicUrl(url).equals(url));
+            QrCode qr = QrCode.encodeSegments(QrSegment.makeSegments(url), QrCode.Ecc.MEDIUM, 1, 10, -1, true);
+            int dimension = 220, scale = dimension / (qr.size + 8), start = (dimension - (qr.size + 8) * scale) / 2 + 4 * scale;
+            yes(scale >= 3);
+            int[] pixels = new int[dimension * dimension]; java.util.Arrays.fill(pixels, 0xffffff);
+            for (int y = 0; y < qr.size; y++) for (int x = 0; x < qr.size; x++) if (qr.getModule(x, y))
+                for (int j = 0; j < scale; j++) for (int i = 0; i < scale; i++)
+                    pixels[(start + y * scale + j) * dimension + start + x * scale + i] = 0;
+            BinaryBitmap image = new BinaryBitmap(new HybridBinarizer(new RGBLuminanceSource(dimension, dimension, pixels)));
+            String decoded = new QRCodeReader().decode(image, new EnumMap<DecodeHintType, Object>(DecodeHintType.class)).getText();
+            yes(decoded.equals(url));
+        }
+        for (String invalid : new String[] { "http://10.0.2.2:8554/?code=12345678", "http://user:password@10.0.2.2:8554/",
+                "http://10.0.2.2:8554/#token", "http://8.8.8.8:8554/", "http://127.0.0.1:8554/", "http://224.0.0.251:8554/",
+                "http://camera.local:8554/", "https://10.0.2.2:8554/", "http://10.0.2.2/", "http://10.0.2.2:8554/secret",
+                "http://010.0.2.2:8554/", "http://10.0.2.2:0/", "http://10.0.2.2:65536/" })
+            rejects(() -> WebAdminRules.publicUrl(invalid));
+        yes(WebAdminRules.remainingSeconds(1000, 999) == 1);
+        yes(WebAdminRules.remainingSeconds(1000, 1000) == 0);
+        yes(WebAdminRules.countdown(300000, 0).equals("5:00"));
+        System.out.println("{\"pass\":true,\"checks\":" + checks + ",\"qr_decoded_independently\":3,\"network_used\":false}");
+    }
+}

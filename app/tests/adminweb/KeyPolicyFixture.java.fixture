@@ -1,0 +1,31 @@
+package org.x04g.home.adminweb.fixtures;
+
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.MessageDigest;
+import java.security.Signature;
+import java.security.spec.ECGenParameterSpec;
+import java.util.Arrays;
+import org.x04g.home.adminweb.tls.KeyAuthorizations;
+
+/** Host software keys only. This does not test enforcement by AndroidKeyStore. */
+public final class KeyPolicyFixture {
+    private static int checks;
+    private static void check(boolean value) { if (!value) throw new AssertionError("KEY_POLICY_"+checks); checks++; }
+    public static void main(String[] args)throws Exception {
+        check(Arrays.equals(KeyAuthorizations.caDigests(),new String[]{"SHA-256"}));
+        check(Arrays.equals(KeyAuthorizations.leafDigests(),new String[]{"SHA-256","NONE"}));
+        String[] changed=KeyAuthorizations.leafDigests();changed[0]="invalid";
+        check("SHA-256".equals(KeyAuthorizations.leafDigests()[0]));
+        KeyPairGenerator g=KeyPairGenerator.getInstance("EC");g.initialize(new ECGenParameterSpec("secp256r1"));KeyPair key=g.generateKeyPair();
+        byte[] transcript="synthetic TLS1.2 handshake transcript".getBytes("UTF-8");
+        byte[] digest=MessageDigest.getInstance("SHA-256").digest(transcript);
+        Signature raw=Signature.getInstance("NONEwithECDSA");raw.initSign(key.getPrivate());raw.update(digest);byte[] signature=raw.sign();
+        Signature hashed=Signature.getInstance("SHA256withECDSA");hashed.initVerify(key.getPublic());hashed.update(transcript);
+        check(hashed.verify(signature)); // The NONE upcall signs the TLS-computed SHA256 digest.
+        hashed.initSign(key.getPrivate());hashed.update(transcript);byte[] other=hashed.sign();
+        raw.initVerify(key.getPublic());raw.update(digest);check(raw.verify(other));
+        digest[0]^=1;raw.initVerify(key.getPublic());raw.update(digest);check(!raw.verify(other));
+        System.out.println("KEY_POLICY_CHECKS="+checks);
+    }
+}

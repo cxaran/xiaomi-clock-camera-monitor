@@ -1,0 +1,68 @@
+{
+  "platform": "windows-x86_64",
+  "archives": [
+    {
+      "name": "platform-29_r05.zip",
+      "url": "https://dl.google.com/android/repository/platform-29_r05.zip",
+      "sha256": "951da8bf175254da74626824f919bd28def64f8828f29dd3b124a535cf4049d8",
+      "destination": "platform29"
+    },
+    {
+      "name": "build-tools_r29.0.3-windows.zip",
+      "url": "https://dl.google.com/android/repository/build-tools_r29.0.3-windows.zip",
+      "sha256": "0ce606d5c46bf4cd0883e4f7078efeae314e41a96dd329c2c089d123cc8c2609",
+      "destination": "build29"
+    },
+    {
+      "name": "ecj-3.33.0.jar",
+      "url": "https://repo.maven.apache.org/maven2/org/eclipse/jdt/ecj/3.33.0/ecj-3.33.0.jar",
+      "sha256": "f7686c4960cf70c2ebc5c500a73a8cfc04541b730c18f1c5c21329889b137f45",
+      "destination": "ecj",
+      "zip": false
+    },
+    {
+      "name": "OpenJDK21U-jre_x64_windows_hotspot_21.0.12.1_1.zip",
+      "url": "https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.12.1%2B1/OpenJDK21U-jre_x64_windows_hotspot_21.0.12.1_1.zip",
+      "sha256": "d35f31e712f0fcf6ac5a093edc90204fbff22f720ba3950bd09d331d5e621636",
+      "destination": "java"
+    }
+  ],
+  "files": {
+    "android": {
+      "path": "platform29/android-10/android.jar",
+      "sha256": "d4ce0daae1695abc7497009c61237f774f52c6ffdc222784e03f60effb917532"
+    },
+    "ecj": {
+      "path": "ecj/ecj-3.33.0.jar",
+      "sha256": "f7686c4960cf70c2ebc5c500a73a8cfc04541b730c18f1c5c21329889b137f45"
+    },
+    "d8": {
+      "path": "build29/android-10/lib/d8.jar",
+      "sha256": "d9e6acde0cb6f2453d6835b52c31d2066054394fb79e91115dd4978bde6afd16"
+    },
+    "apksigner": {
+      "path": "build29/android-10/lib/apksigner.jar",
+      "sha256": "4245254627f4b125964a16337ec29247cf77cd2b66afe3343ffeb5f4af9450e3"
+    },
+    "aapt2": {
+      "path": "build29/android-10/aapt2.exe",
+      "sha256": "85b7ae41a5b001d35456a9ddaee75bcd38f5ba1adba693823900170c932bfdc9"
+    },
+    "zipalign": {
+      "path": "build29/android-10/zipalign.exe",
+      "sha256": "5b2f5b8288c63263662f20dc357c0934820d9edf8473ef8eecf74c6deab5d33c"
+    },
+    "stubs": {
+      "path": "build29/android-10/core-lambda-stubs.jar",
+      "sha256": "b370525f81bd8da7a6f9bb37958963ad469f1517813a20632eaf51c6f0cdee93"
+    },
+    "java": {
+      "path": "java/jdk-21.0.12.1+1-jre/bin/java.exe",
+      "sha256": "82051fdab26319d77d20cc0065045d05ec00b3e3d05f44935d7c06b96b621d55"
+    },
+    "keytool": {
+      "path": "java/jdk-21.0.12.1+1-jre/bin/keytool.exe",
+      "sha256": "3576ba983634afd753814ea089a98be965ac5da270b3b83deb1e9a5ac53fa3d7"
+    }
+  }
+}

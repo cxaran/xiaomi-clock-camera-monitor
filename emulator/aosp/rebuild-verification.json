@@ -1,0 +1,136 @@
+{
+  "schema": "x04g.aosp-native-rebuild-verified.v1",
+  "scope": "HOST cross-build only, no Android execution",
+  "ndk": "20.1.5948944",
+  "steps": [
+    {
+      "component": "graphics",
+      "phase": "configure",
+      "returncode": 0
+    },
+    {
+      "component": "graphics",
+      "phase": "build",
+      "returncode": 0
+    },
+    {
+      "component": "window",
+      "phase": "configure",
+      "returncode": 0
+    },
+    {
+      "component": "window",
+      "phase": "build",
+      "returncode": 0
+    },
+    {
+      "component": "mapper",
+      "phase": "configure",
+      "returncode": 0
+    },
+    {
+      "component": "mapper",
+      "phase": "build",
+      "returncode": 0
+    },
+    {
+      "component": "bluetooth",
+      "phase": "configure",
+      "returncode": 0
+    },
+    {
+      "component": "bluetooth",
+      "phase": "build",
+      "returncode": 0
+    },
+    {
+      "component": "wifi",
+      "phase": "configure",
+      "returncode": 0
+    },
+    {
+      "component": "wifi",
+      "phase": "build",
+      "returncode": 0
+    }
+  ],
+  "native_outputs": [
+    {
+      "component": "graphics",
+      "file": "libGLESv2_enc.so",
+      "bytes": 2140908,
+      "sha256": "69e6474ac3b649ec0c4f09d375bbba200bd712986c8224e118a40cbb3e0e57b7"
+    },
+    {
+      "component": "graphics",
+      "file": "libOpenglCodecCommon.so",
+      "bytes": 1706360,
+      "sha256": "d9cb6e836b5223972a351119e1e614f50d960b072bf2c7be3c6ce3c97d15c132"
+    },
+    {
+      "component": "graphics",
+      "file": "gralloc.ranchu.so",
+      "bytes": 319120,
+      "sha256": "8e9f02eae40eec705a085bcdef1b84e6a65f782bf63d1091900deee252836ba3"
+    },
+    {
+      "component": "graphics",
+      "file": "libGLESv1_enc.so",
+      "bytes": 1162188,
+      "sha256": "3684680a8b531e874ccf2f478c97da280f4e2d6076ecf99b6b6159e4d8b4cc80"
+    },
+    {
+      "component": "graphics",
+      "file": "lib_renderControl_enc.so",
+      "bytes": 107124,
+      "sha256": "29ebe3e3283606566e8688311044c3d1156fc268f91e1f0570b22f6897b86fb6"
+    },
+    {
+      "component": "graphics",
+      "file": "libOpenglSystemCommon.so",
+      "bytes": 165556,
+      "sha256": "010f3dd3161327c30c6e79fafa54717eeadd658671ccce4eee29cf25d9d30413"
+    },
+    {
+      "component": "window",
+      "file": "libGLESv1_CM_emulation.so",
+      "bytes": 188880,
+      "sha256": "10ccccca4d930e4b36a9a2b0694c623f6e1225e0e5d53348f69238ad455ddc62"
+    },
+    {
+      "component": "window",
+      "file": "libGLESv2_emulation.so",
+      "bytes": 273524,
+      "sha256": "6316c9161a17a8e66bb723a376a8e3c3c1e1ca966e3a597e309174266e6dcc24"
+    },
+    {
+      "component": "window",
+      "file": "libEGL_emulation.so",
+      "bytes": 1047212,
+      "sha256": "7558b9925cff54c606d394cfe62a7823b9409fdff3d2f3ce419078f70bb3a2e8"
+    },
+    {
+      "component": "mapper",
+      "file": "android.hardware.graphics.mapper@2.0-impl.so",
+      "bytes": 383632,
+      "sha256": "27aa7407c35efc26c1a610cf7d17d901dddb08ce9afb5fce636ece4dcab9a7a3"
+    },
+    {
+      "component": "bluetooth",
+      "file": "android.hardware.bluetooth@1.0-service.shared15-virtio",
+      "bytes": 242928,
+      "sha256": "9cc76b5d17fec888d5cb3a5ea30317adfcd112772d7dd7804a5df1fa641e2aa6"
+    },
+    {
+      "component": "wifi",
+      "file": "android.hardware.wifi@1.0-service",
+      "bytes": 9862664,
+      "sha256": "ecd1d11b4c30106006fe7063faf2341d1126fefcea4381d513a3107d14ccbcb1"
+    }
+  ],
+  "distributed_source_lock_sha256": "8f63a5d55148833eb586c02de53d312f39496be36e7f26c4a086fc9587f336ef",
+  "rebuild_tool_sha256": "191063913ba8b915b1ac256d043f32e3d93f8d35e652ee277cc8b26ba2361187",
+  "personal_build_paths_in_runtime_outputs": false,
+  "installed": false,
+  "image_recipe_modified": false
+}

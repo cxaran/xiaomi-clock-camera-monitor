@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "compiled": true,
+  "kernel_release": "4.14.175-x04g-input07",
+  "source_tree": "db813761ee83e8168141653dfc13ad5f46bfbb22",
+  "clang": "Android r365631c (9.0.8)",
+  "host_cc": "GCC 15.2.0",
+  "make": "GNU Make 4.4.1",
+  "config_unchanged_after_olddefconfig": true,
+  "config_sha256": "2bd44576a8766f2875fe5c5bba59a03c5e77834cd75d671f00572525739d57d9",
+  "image_sha256": "0623d8095e8651aa066af8b944de35f974c15991538312989e86769b67d9632c",
+  "image_bytes": 6084017,
+  "build_user": "builder",
+  "build_host": "localhost",
+  "device_accessed": false
+}

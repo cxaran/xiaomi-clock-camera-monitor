@@ -1,0 +1,70 @@
+package org.x04g.home.adminweb;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.nio.charset.StandardCharsets;
+
+public final class HttpFixture {
+    static int checks;
+    static final HttpMessage.Deadline OK = new HttpMessage.Deadline() { public void check() { } };
+    static void check(boolean pass) { if (!pass) throw new AssertionError("HTTP_" + checks); checks++; }
+    static HttpMessage read(String text) throws Exception {
+        return HttpMessage.read(new ByteArrayInputStream(text.getBytes(StandardCharsets.UTF_8)), OK);
+    }
+    static void bad(String text, int status) throws Exception {
+        try { read(text); throw new AssertionError("ACCEPTED"); }
+        catch (HttpMessage.BadRequest expected) { check(expected.status == status); }
+    }
+    public static void main(String[] args) throws Exception {
+        try (HttpMessage message = read("GET / HTTP/1.1\r\nHost: 10.0.0.2:1234\r\n\r\n")) {
+            check(message.method.equals("GET") && message.path.equals("/") && message.body.length == 0);
+        }
+        HttpMessage body = read("POST /api/pair HTTP/1.1\r\nHost: a\r\nContent-Length: 2\r\n\r\n{}");
+        check(body.utf8().equals("{}")); body.close(); check(body.body[0] == 0 && body.body[1] == 0);
+        bad("GET / HTTP/1.1\nHost: a\n\n", 400);
+        bad("GET / HTTP/1.1\r\nHost: a\r\nHost: b\r\n\r\n", 400);
+        bad("POST / HTTP/1.1\r\nHost: a\r\nContent-Length: 1\r\ncontent-length: 1\r\n\r\nx", 400);
+        bad("GET http://host/ HTTP/1.1\r\nHost: a\r\n\r\n", 400);
+        bad("GET /?password=x HTTP/1.1\r\nHost: a\r\n\r\n", 400);
+        bad("POST / HTTP/1.1\r\nHost: a\r\nTransfer-Encoding: chunked\r\nContent-Length: 0\r\n\r\n", 400);
+        bad("POST / HTTP/1.1\r\nHost: a\r\nContent-Length: 65537\r\n\r\n", 413);
+        bad("POST / HTTP/1.1\r\nHost: a\r\n\r\n", 411);
+        bad("GET / HTTP/1.1\r\nHost: a\r\nContent-Length: 2\r\n\r\n{}", 400);
+        bad("GET / HTTP/1.0\r\nHost: a\r\n\r\n", 400);
+        bad("GET / HTTP/1.1\r\nHost: a\r\n X: folded\r\n\r\n", 400);
+        bad("GET / HTTP/1.1\r\nHost: a\r\nX: " + "a".repeat(8192) + "\r\n\r\n", 431);
+        final int[] calls = {0};
+        try {
+            HttpMessage.read(new ByteArrayInputStream("GET / HTTP/1.1\r\nHost: a\r\n\r\n".getBytes(StandardCharsets.US_ASCII)),
+                new HttpMessage.Deadline() { public void check() throws IOException {
+                    if (++calls[0] > 10) throw new SocketTimeoutException("synthetic");
+                } });
+            throw new AssertionError("DEADLINE_IGNORED");
+        } catch (SocketTimeoutException expected) { checks++; }
+        // The post-read check rejects a completed body arriving after the absolute deadline.
+        final boolean[] late = {false};
+        final byte[] bytes = "POST / HTTP/1.1\r\nHost: a\r\nContent-Length: 2\r\n\r\n{}".getBytes(StandardCharsets.US_ASCII);
+        InputStream drip = new ByteArrayInputStream(bytes) {
+            @Override public synchronized int read(byte[] b,int o,int n) {
+                int count = super.read(b,o,n); late[0] = true; return count;
+            }
+        };
+        try {
+            HttpMessage.read(drip, new HttpMessage.Deadline() { public void check() throws IOException {
+                if (late[0]) throw new SocketTimeoutException("synthetic");
+            } }); throw new AssertionError("LATE_BODY_ACCEPTED");
+        } catch (SocketTimeoutException expected) { checks++; }
+        JsonBounds.check("{\"ids\":[\"a\",\"b\"],\"escaped\":\"x\\\"[]{}\"}"); checks++;
+        try { JsonBounds.check("{\"x\":" + "[".repeat(9) + "]".repeat(9) + "}"); throw new AssertionError("DEPTH"); }
+        catch (HttpMessage.BadRequest expected) { checks++; }
+        try { JsonBounds.check("{}{}"); throw new AssertionError("TRAILING_JSON"); }
+        catch (HttpMessage.BadRequest expected) { checks++; }
+        try { JsonBounds.check("{\"text\":\"" + "x".repeat(4097) + "\"}"); throw new AssertionError("STRING"); }
+        catch (HttpMessage.BadRequest expected) { checks++; }
+        try { JsonBounds.check("[" + "0,".repeat(513) + "0]"); throw new AssertionError("TOKENS"); }
+        catch (HttpMessage.BadRequest expected) { checks++; }
+        System.out.println("HTTP_CHECKS=" + checks);
+    }
+}

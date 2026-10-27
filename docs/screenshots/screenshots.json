@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "images": [
+    {
+      "file": "camera-admin.png",
+      "sha256": "d138aaf913d9d4d58dcdac6bc251e70928eb51583c7b75b4820fb4f0c19c6b52",
+      "width": 800,
+      "height": 480,
+      "source": "OEM framework in PC emulator",
+      "private_camera_content": false
+    },
+    {
+      "file": "camera-editor.png",
+      "sha256": "6e9cf23156ec6aabd812d331a4850edb80216502d7d1182bc74f25131f60c9a3",
+      "width": 800,
+      "height": 480,
+      "source": "OEM framework in PC emulator",
+      "private_camera_content": false
+    },
+    {
+      "file": "camera-keyboard.png",
+      "sha256": "c746b1ea81877aced5238f5519b9c658e6a20bcc35698d0a34c84620a381e3c7",
+      "width": 800,
+      "height": 480,
+      "source": "OEM framework in PC emulator",
+      "private_camera_content": false
+    },
+    {
+      "file": "camera-page.png",
+      "sha256": "1e19d5cc68e1cb3d354cfa1bca93ecaee5d5151af5cbd6b4d76cb4ff717806b5",
+      "width": 800,
+      "height": 480,
+      "source": "OEM framework in PC emulator",
+      "private_camera_content": false
+    },
+    {
+      "file": "camera-selector.png",
+      "sha256": "f2e2c0a5990770fac440a3d36101d60b6603d61500c2a256f837a1fa0b6b977b",
+      "width": 800,
+      "height": 480,
+      "source": "OEM framework in PC emulator",
+      "private_camera_content": false
+    },
+    {
+      "file": "oem-clock.png",
+      "sha256": "da03a798469d84c4ff0efb0a7d1e21b437a72805abe2276210a526f9dc2e4f43",
+      "width": 800,
+      "height": 480,
+      "source": "physical X04G",
+      "private_camera_content": false
+    },
+    {
+      "file": "oem-shortcuts.png",
+      "sha256": "ce357860fa2b4e124d83ff51da6d14274bceee67f8da1f1e8785c6416aaa5d43",
+      "width": 800,
+      "height": 480,
+      "source": "OEM framework in PC emulator",
+      "private_camera_content": false
+    }
+  ],
+  "emulator_camera_count": 0,
+  "images_edited": false
+}

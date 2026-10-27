@@ -1,0 +1,7 @@
+{
+  "oem_system": "/srv/x04g-inputs/oem-system",
+  "oem_product": "/srv/x04g-inputs/oem-product",
+  "oem_vendor": "/srv/x04g-inputs/oem-vendor",
+  "sdk_system": "/srv/x04g-inputs/sdk-system",
+  "sdk_vendor": "/srv/x04g-inputs/sdk-vendor"
+}

@@ -1,0 +1,228 @@
+package org.x04g.home.gate;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import org.json.JSONObject;
+
+/** Offline only. All Transport instances are in-memory fakes; no Android/Socket calls. */
+public final class GateFixtures {
+    private static int assertions;
+    private static byte[] key;
+    private static LearnedRfPulse pulse;
+    private static void check(boolean value, String test) { assertions++; if (!value) throw new AssertionError(test); }
+    private static byte[] hex(String text) {
+        byte[] out = new byte[text.length() / 2];
+        for (int i = 0; i < out.length; i++) out[i] = (byte) Integer.parseInt(text.substring(i * 2, i * 2 + 2), 16);
+        return out;
+    }
+    private static GateProfile profile(LearnedRfPulse command) { return new GateProfile("192.168.99.2", "fixture-device", key, command); }
+    private static byte[] response(int sequence, int command, byte[] plain) throws Exception {
+        return response(sequence, command, 0, plain, key);
+    }
+    private static byte[] response(int sequence, int command, int returnCode, byte[] plain, byte[] responseKey) throws Exception {
+        byte[] payload = plain == null ? new byte[0] : Tuya33Codec.crypt(Cipher.ENCRYPT_MODE, plain, responseKey);
+        ByteBuffer body = ByteBuffer.allocate(payload.length + 4).putInt(returnCode).put(payload);
+        return Tuya33Codec.frame(sequence, command, body.array());
+    }
+    private static final class Clock implements TuyaGateClient.Clock {
+        long now = 1_000_000_000L;
+        public long nanoTime() { return now; }
+    }
+    private static final class Fake implements TuyaGateClient.Transport {
+        final String behavior; final ByteArrayOutputStream written = new ByteArrayOutputStream();
+        byte[] reply; int offset; boolean closed;
+        CountDownLatch reading, released;
+        Fake(String behavior) { this.behavior = behavior; }
+        public void connect(long deadline) throws Exception { if (behavior.equals("connect_failure")) throw new IOException("fixture"); }
+        public int write(ByteBuffer source, long deadline) throws Exception {
+            if (behavior.equals("partial_failure") && written.size() >= 3) throw new IOException("fixture_partial_write");
+            int count = Math.min(source.remaining(), 3);
+            byte[] part = new byte[count]; source.get(part); written.write(part); return count;
+        }
+        public void readFully(ByteBuffer destination, long deadline) throws Exception {
+            if (behavior.equals("timeout")) throw new SocketTimeoutException("fixture");
+            if (behavior.equals("blocked")) { reading.countDown(); released.await(2, TimeUnit.SECONDS); throw new IOException("fixture_closed"); }
+            if (reply == null) {
+                byte[] request = written.toByteArray(); ByteBuffer header = ByteBuffer.wrap(request);
+                header.getInt(); int seq = header.getInt(), command = header.getInt();
+                byte[] plain = command == 10 ? "json obj data unvalid".getBytes(StandardCharsets.UTF_8) : null;
+                int returnCode = behavior.startsWith("query_retcode1_") && command == 10
+                        || behavior.startsWith("control_retcode1_") && command == 7 ? 1 : 0;
+                if (behavior.endsWith("_dps")) plain = "{\"dps\":{\"1\":false}}".getBytes(StandardCharsets.UTF_8);
+                if (behavior.endsWith("_known")) plain = "json obj data unvalid".getBytes(StandardCharsets.UTF_8);
+                if (behavior.endsWith("_empty")) plain = null;
+                if (behavior.endsWith("_unknown")) plain = "{}".getBytes(StandardCharsets.UTF_8);
+                byte[] responseKey = key.clone();
+                try {
+                    if (behavior.endsWith("_wrong_key")) responseKey[0] ^= 1;
+                    reply = response(seq, command, returnCode, plain, responseKey);
+                } finally { Arrays.fill(responseKey, (byte) 0); }
+                if (behavior.endsWith("_bad_crc")) reply[reply.length - 8] ^= 1;
+                if (behavior.endsWith("_bad_suffix")) reply[reply.length - 1] ^= 1;
+            }
+            int n = destination.remaining();
+            if (offset + n > reply.length) throw new SocketTimeoutException("fixture_exhausted");
+            destination.put(reply, offset, n); offset += n;
+        }
+        public void close() { closed = true; if (released != null) released.countDown(); }
+    }
+    private static final class Factory implements TuyaGateClient.TransportFactory {
+        final Fake[] values; int created;
+        Factory(Fake... values) { this.values = values; }
+        public TuyaGateClient.Transport create(byte[] address) { return values[created++]; }
+    }
+
+    private static void unconfirmedQuery(String behavior, GateStatus.Problem problem) {
+        Clock clock = new Clock(); Fake query = new Fake(behavior); Factory factory = new Factory(query);
+        TuyaGateClient client = new TuyaGateClient(profile(pulse), factory, clock);
+        GateStatus status = client.queryStatus();
+        check(status.tcpConnected && !status.keyConfirmed && !client.canActuate()
+                && status.state == GateStatus.State.REACHABLE_UNCONFIRMED && status.problem == problem,
+                "unconfirmed_" + behavior);
+        int bytes = query.written.size();
+        check(client.actuateOnce(client.manualRequestFromUserTap()).outcome == TuyaGateClient.ControlResult.Outcome.NEEDS_FRESH_STATUS
+                && factory.created == 1 && query.written.size() == bytes && query.closed,
+                "no_control_after_" + behavior);
+        client.close();
+    }
+
+    private static void retcodeRegressions() throws Exception {
+        // Shape observed on the real L20: query retcode 1, matching sequence, valid CRC and encrypted known rejection.
+        for (String behavior : new String[]{"query_retcode1_known", "query_retcode1_dps"}) {
+            Clock clock = new Clock(); Fake query = new Fake(behavior); Factory factory = new Factory(query);
+            TuyaGateClient client = new TuyaGateClient(profile(pulse), factory, clock);
+            GateStatus status = client.queryStatus();
+            check(status.state == GateStatus.State.ONLINE_QUERY_REJECTED && status.problem == GateStatus.Problem.DEVICE_REJECTED
+                    && status.tcpConnected && status.keyConfirmed && client.canActuate(), "retcode1_known_key_" + behavior);
+            check(factory.created == 1 && query.closed && !client.physicalReplayVerified()
+                    && ByteBuffer.wrap(query.written.toByteArray()).getInt(8) == Tuya33Codec.DP_QUERY,
+                    "query_only_not_movement_" + behavior);
+            client.close();
+        }
+        unconfirmedQuery("query_retcode1_empty", GateStatus.Problem.DEVICE_REJECTED);
+        unconfirmedQuery("query_retcode1_unknown", GateStatus.Problem.DEVICE_REJECTED);
+        unconfirmedQuery("query_retcode1_wrong_key", GateStatus.Problem.KEY_OR_VERSION);
+        unconfirmedQuery("query_retcode1_bad_crc", GateStatus.Problem.INVALID_FRAME);
+        unconfirmedQuery("query_retcode1_bad_suffix", GateStatus.Problem.INVALID_FRAME);
+        unconfirmedQuery("query_empty", GateStatus.Problem.TIMEOUT);
+        for (String behavior : new String[]{"control_retcode1_known", "control_retcode1_empty"}) {
+            Clock clock = new Clock(); Fake query = new Fake("normal"), control = new Fake(behavior);
+            Factory factory = new Factory(query, control); TuyaGateClient client = new TuyaGateClient(profile(pulse), factory, clock);
+            check(client.queryStatus().keyConfirmed, "control_rejection_preceded_by_proof_" + behavior);
+            TuyaGateClient.ManualRequest ticket = client.manualRequestFromUserTap();
+            TuyaGateClient.ControlResult result = client.actuateOnce(ticket);
+            check(result.outcome == TuyaGateClient.ControlResult.Outcome.DEVICE_REJECTED
+                    && result.problem == GateStatus.Problem.DEVICE_REJECTED && !result.physicalReplayVerified
+                    && !client.canActuate() && factory.created == 2 && control.closed,
+                    "control_retcode1_still_rejected_" + behavior);
+            int bytes = control.written.size();
+            check(client.actuateOnce(ticket).outcome == TuyaGateClient.ControlResult.Outcome.INVALID_REQUEST
+                    && control.written.size() == bytes && factory.created == 2, "control_rejection_no_retry_" + behavior);
+            client.close();
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        JSONObject vectors = new JSONObject(new String(Files.readAllBytes(Paths.get(args[0])), StandardCharsets.UTF_8));
+        key = vectors.getString("key_ascii").getBytes(StandardCharsets.US_ASCII);
+        pulse = LearnedRfPulse.fromCapturedBase64(vectors.getString("capture_base64_synthetic"), false);
+        check(Arrays.equals(Tuya33Codec.request(1, 10, vectors.getString("query_json").getBytes(StandardCharsets.UTF_8), key),
+                hex(vectors.getString("query_frame_hex"))), "query_matches_tinytuya");
+        check(Arrays.equals(Tuya33Codec.request(2, 7, vectors.getString("control_json").getBytes(StandardCharsets.UTF_8), key),
+                hex(vectors.getString("control_frame_hex"))), "control_matches_tinytuya");
+        JSONObject expected = new JSONObject(vectors.getJSONObject("replay_dps_synthetic").getString("201"));
+        JSONObject replay = new JSONObject(pulse.dps().getString("201"));
+        check(replay.getString("control").equals(expected.getString("control")), "replay_command");
+        check(replay.getInt("feq") == 0 && !replay.has("study_feq") && replay.getInt("mode") == 0 && replay.getInt("rate") == 0, "embedded_frequency");
+        check(replay.getJSONObject("key1").getInt("times") == 4 && replay.getJSONObject("key1").getInt("intervals") == 0, "four_rf_repetitions");
+        JSONObject replayKey = replay.getJSONObject("key1");
+        check(replayKey.length() == 4 && replayKey.has("code") && replayKey.has("times")
+                && replayKey.getInt("delay") == 0 && replayKey.has("intervals") && !replayKey.has("ver"), "pc_verified_key_schema");
+        check(replay.getJSONObject("key1").getString("code").equals(expected.getJSONObject("key1").getString("code")), "container_preserved");
+        for (String name : new String[]{"query_rejection_frame_hex", "status_frame_hex", "status_no_version_frame_hex"}) {
+            Tuya33Codec.Frame frame = Tuya33Codec.response(hex(vectors.getString(name)));
+            GateStatus.Decoded status = GateStatus.inspect(Tuya33Codec.plaintext(frame.payload, key));
+            check(status.keyConfirmed, "known_key_" + name);
+            check(name.startsWith("query") ? status.rejected && !status.hasDps : status.hasDps, "status_shape_" + name);
+            check(!status.types.containsValue("synthetic-not-real-rf"), "no_dp_values_" + name);
+        }
+        byte[] headerPlain = "{\"dps\":{\"1\":true}}".getBytes(StandardCharsets.UTF_8);
+        byte[] headerCipher = Tuya33Codec.crypt(Cipher.ENCRYPT_MODE, headerPlain, key);
+        byte[] metadataPayload = new byte[15 + headerCipher.length];
+        metadataPayload[0] = '3'; metadataPayload[1] = '.'; metadataPayload[2] = '3';
+        for (int i = 3; i < 15; i++) metadataPayload[i] = (byte) (i + 1);
+        System.arraycopy(headerCipher, 0, metadataPayload, 15, headerCipher.length);
+        check(Arrays.equals(Tuya33Codec.plaintext(metadataPayload, key), headerPlain), "nonzero_reserved_header_accepted");
+        for (int length : new int[]{14, 15, 16}) {
+            try { Tuya33Codec.plaintext(Arrays.copyOf(metadataPayload, length), key); check(false, "invalid_cipher_size_accepted_" + length); }
+            catch (IOException good) { check(true, "invalid_cipher_size_rejected_" + length); }
+        }
+        Cipher raw = Cipher.getInstance("AES/ECB/NoPadding");
+        raw.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "AES"));
+        byte[] invalidPadding = raw.doFinal(new byte[16]); // A zero padding length is never valid PKCS7.
+        try { Tuya33Codec.plaintext(invalidPadding, key); check(false, "invalid_padding_accepted"); }
+        catch (javax.crypto.BadPaddingException good) { check(true, "invalid_padding_rejected"); }
+        byte[] damaged = hex(vectors.getString("status_frame_hex")); damaged[23] ^= 1;
+        try { Tuya33Codec.response(damaged); check(false, "bad_crc_accepted"); } catch (IOException good) { check(true, "bad_crc_rejected"); }
+        try { Tuya33Codec.response(Arrays.copyOf(damaged, 19)); check(false, "truncated_accepted"); } catch (IOException good) { check(true, "truncated_rejected"); }
+        byte[] oversized = ByteBuffer.allocate(16).putInt(0x55aa).putInt(1).putInt(10).putInt(-1).array();
+        try { Tuya33Codec.frameLength(oversized); check(false, "oversize_accepted"); } catch (IOException good) { check(true, "oversize_rejected"); }
+        try { GateStatus.inspect(("{\"dps\":" + new String(new char[17]).replace("\0", "[") + "0" + new String(new char[17]).replace("\0", "]") + "}").getBytes(StandardCharsets.UTF_8)); check(false, "deep_json_accepted"); }
+        catch (Exception good) { check(true, "deep_json_rejected"); }
+        try { new GateProfile("8.8.8.8", "fixture-device", key, pulse); check(false, "public_destination"); }
+        catch (IllegalArgumentException good) { check(true, "public_destination_rejected"); }
+
+        retcodeRegressions();
+
+        Clock clock = new Clock(); Fake query = new Fake("normal"), timeout = new Fake("timeout"); Factory factory = new Factory(query, timeout);
+        TuyaGateClient client = new TuyaGateClient(profile(pulse), factory, clock);
+        check(!client.canActuate(), "no_control_before_proof");
+        GateStatus status = client.queryStatus();
+        check(status.state == GateStatus.State.ONLINE_QUERY_REJECTED && status.keyConfirmed && client.canActuate(), "query_rejection_is_key_proof");
+        TuyaGateClient.ManualRequest ticket = client.manualRequestFromUserTap();
+        TuyaGateClient.ControlResult result = client.actuateOnce(ticket);
+        check(result.outcome == TuyaGateClient.ControlResult.Outcome.UNCERTAIN && result.problem == GateStatus.Problem.TIMEOUT, "timeout_after_send_uncertain");
+        int bytes = timeout.written.size();
+        check(client.actuateOnce(ticket).outcome == TuyaGateClient.ControlResult.Outcome.INVALID_REQUEST && timeout.written.size() == bytes && factory.created == 2, "no_ticket_retry_or_queue");
+        check(!client.canActuate() && !result.physicalReplayVerified && timeout.closed, "fresh_proof_required_and_closed"); client.close();
+
+        Fake q2 = new Fake("normal"), ack = new Fake("normal"); Factory f2 = new Factory(q2, ack);
+        TuyaGateClient c2 = new TuyaGateClient(profile(pulse), f2, clock); c2.queryStatus();
+        check(c2.actuateOnce(c2.manualRequestFromUserTap()).outcome == TuyaGateClient.ControlResult.Outcome.ACKNOWLEDGED, "transport_ack_only");
+        byte[] packet = ack.written.toByteArray(); byte[] encrypted = Arrays.copyOfRange(packet, 16, packet.length - 8);
+        JSONObject sent = new JSONObject(new String(Tuya33Codec.plaintext(encrypted, key), StandardCharsets.UTF_8));
+        check(sent.getJSONObject("dps").length() == 1 && new JSONObject(sent.getJSONObject("dps").getString("201")).getJSONObject("key1").getInt("times") == 4, "one_control_four_rf_repetitions");
+        check(!c2.physicalReplayVerified(), "ack_not_physical_verification"); c2.close();
+
+        TuyaGateClient unconfigured = new TuyaGateClient(profile(null), new Factory(), clock);
+        check(unconfigured.actuateOnce(unconfigured.manualRequestFromUserTap()).outcome == TuyaGateClient.ControlResult.Outcome.NOT_CONFIGURED, "missing_capture_never_sends"); unconfigured.close();
+        TuyaGateClient expired = new TuyaGateClient(profile(pulse), new Factory(), clock);
+        TuyaGateClient.ManualRequest old = expired.manualRequestFromUserTap(); clock.now += 6_000_000_000L;
+        check(expired.actuateOnce(old).outcome == TuyaGateClient.ControlResult.Outcome.INVALID_REQUEST, "expired_intent_never_sends"); expired.close();
+
+        Fake q3 = new Fake("normal"), partial = new Fake("partial_failure");
+        TuyaGateClient c3 = new TuyaGateClient(profile(pulse), new Factory(q3, partial), clock); c3.queryStatus();
+        check(c3.actuateOnce(c3.manualRequestFromUserTap()).outcome == TuyaGateClient.ControlResult.Outcome.UNCERTAIN && partial.written.size() == 3, "partial_write_uncertain_no_retry"); c3.close();
+
+        Fake q4 = new Fake("normal"), blocked = new Fake("blocked"); blocked.reading = new CountDownLatch(1); blocked.released = new CountDownLatch(1);
+        Factory f4 = new Factory(q4, blocked); TuyaGateClient c4 = new TuyaGateClient(profile(pulse), f4, clock); c4.queryStatus();
+        final TuyaGateClient.ControlResult[] async = new TuyaGateClient.ControlResult[1];
+        TuyaGateClient.ManualRequest manual = c4.manualRequestFromUserTap();
+        Thread worker = new Thread(() -> async[0] = c4.actuateOnce(manual)); worker.start();
+        check(blocked.reading.await(1, TimeUnit.SECONDS), "control_started_in_memory");
+        check(c4.queryStatus().state == GateStatus.State.BUSY && f4.created == 2, "single_flight_no_queue");
+        c4.close(); worker.join(2000);
+        check(!worker.isAlive() && async[0].outcome == TuyaGateClient.ControlResult.Outcome.UNCERTAIN && async[0].problem == GateStatus.Problem.CANCELLED, "close_after_send_uncertain");
+        System.out.println("{\"pass\":true,\"assertions\":" + assertions + ",\"synthetic_only\":true,\"network_used\":false,\"device_used\":false}");
+    }
+}

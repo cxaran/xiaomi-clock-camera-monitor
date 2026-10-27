@@ -1,0 +1,64 @@
+package org.x04g.home.adminweb.fixtures;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.MessageDigest;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.security.spec.ECGenParameterSpec;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Date;
+import java.util.List;
+import org.x04g.home.adminweb.tls.DerCertificates;
+
+/** Synthetic software keys in RAM only; no Android provider, socket or credential. */
+public final class PkiFixture {
+    private static int checks;
+    private static void check(boolean ok) { if (!ok) throw new AssertionError("PKI_" + checks); checks++; }
+    public static void main(String[] args) throws Exception {
+        Path out = Path.of(args[0]); Files.createDirectories(out);
+        KeyPairGenerator generator = KeyPairGenerator.getInstance("EC");
+        generator.initialize(new ECGenParameterSpec("secp256r1"));
+        KeyPair root = generator.generateKeyPair(), leafKey = generator.generateKeyPair();
+        long n = System.currentTimeMillis();
+        X509Certificate ca = DerCertificates.ca(root.getPublic(), root.getPrivate(),
+            new Date(n - 86400000L), new Date(n + 31536000000L));
+        X509Certificate leaf = DerCertificates.leaf(leafKey.getPublic(), root.getPrivate(), ca,
+            new byte[] { 10, (byte) 203, 11, 7 }, new Date(n - 60000), new Date(n + 86400000));
+        ca.checkValidity(); leaf.checkValidity(); ca.verify(root.getPublic()); leaf.verify(root.getPublic()); checks += 4;
+        check(ca.getBasicConstraints() == 0); check(leaf.getBasicConstraints() == -1);
+        check(ca.getCriticalExtensionOIDs().containsAll(Arrays.asList("2.5.29.19", "2.5.29.15")));
+        check(ca.getKeyUsage()[5] && ca.getKeyUsage()[6]); check(leaf.getKeyUsage()[0]);
+        check(leaf.getExtendedKeyUsage().equals(List.of("1.3.6.1.5.5.7.3.1")));
+        List<?> san = leaf.getSubjectAlternativeNames().iterator().next();
+        check(Integer.valueOf(7).equals(san.get(0)) && "10.203.11.7".equals(san.get(1)));
+        check(Arrays.equals(leaf.getPublicKey().getEncoded(), leafKey.getPublic().getEncoded()));
+        check(leaf.getIssuerX500Principal().equals(ca.getSubjectX500Principal()));
+        check(leaf.getSigAlgOID().equals("1.2.840.10045.4.3.2"));
+        check(leaf.getSigAlgParams() == null);
+        boolean rejected = false; try { leaf.verify(leafKey.getPublic()); } catch (Exception expected) { rejected = true; }
+        check(rejected);
+        Files.write(out.resolve("ca.der"), ca.getEncoded());
+        byte[] before = MessageDigest.getInstance("SHA-256").digest(ca.getEncoded());
+        X509Certificate reloaded = (X509Certificate) CertificateFactory.getInstance("X.509")
+            .generateCertificate(Files.newInputStream(out.resolve("ca.der")));
+        check(Arrays.equals(before, MessageDigest.getInstance("SHA-256").digest(reloaded.getEncoded())));
+        reloaded.verify(root.getPublic()); check(reloaded.getBasicConstraints() == 0);
+        // Reissue a different leaf from the same public CA: a browser's installed CA identity does not rotate.
+        KeyPair other = generator.generateKeyPair();
+        X509Certificate next = DerCertificates.leaf(other.getPublic(), root.getPrivate(), reloaded,
+            new byte[] { 10, (byte) 203, 11, 8 }, new Date(n - 60000), new Date(n + 86400000));
+        next.verify(reloaded.getPublicKey()); check(!Arrays.equals(next.getEncoded(), leaf.getEncoded()));
+        check(Arrays.equals(before, MessageDigest.getInstance("SHA-256").digest(reloaded.getEncoded())));
+        pem(out.resolve("ca.pem"), ca); pem(out.resolve("leaf.pem"), leaf); pem(out.resolve("next_leaf.pem"), next);
+        System.out.println("PKI_CHECKS=" + checks);
+    }
+    private static void pem(Path path, X509Certificate cert) throws Exception {
+        String b64 = Base64.getMimeEncoder(64, new byte[] {10}).encodeToString(cert.getEncoded());
+        Files.writeString(path, "-----BEGIN CERTIFICATE-----\n" + b64 + "\n-----END CERTIFICATE-----\n", StandardCharsets.US_ASCII);
+    }
+}

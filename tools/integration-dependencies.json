@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "ndk": {
+    "package": "ndk;20.1.5948944",
+    "revision": "20.1.5948944",
+    "archive": "android-ndk-r20b-linux-x86_64.zip",
+    "url": "https://dl.google.com/android/repository/android-ndk-r20b-linux-x86_64.zip",
+    "bytes": 859780564,
+    "sha256": "8381c440fe61fcbb01e209211ac01b519cd6adf51ab1c2281d5daad6ca4c8c8c",
+    "clang_relative_path": "toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+    "clang_sha256": "b883b373215c45b1206a60a21af2f9e5cb997228c0a36c629af07e220bf7b3b2",
+    "extract_on": "Linux case-sensitive filesystem, not a case-insensitive NTFS mount"
+  }
+}
