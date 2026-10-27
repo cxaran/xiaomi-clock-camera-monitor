@@ -1,5 +1,5 @@
 {
-  "AndroidManifest.xml": "7b0dcadc5f42b7af54d1f96997013bdd6e0803f87d3916fbf6454c273853bca3",
+  "AndroidManifest.xml": "ad7547e3666fc51c97c53eb20a85c5834733615459a3414c182ee4ef28404a99",
   "assets/adminweb/index.html": "51a395e444a6122a85b39da23d7bd7b13fd6c329184b186efc25932e90b8e141",
   "src/org/x04g/home/AdminWebSession.java": "134606dc29828af1b9013c6b4c6b96ea2f68c22a735d518e8b269104177bb708",
   "src/org/x04g/home/AppSession.java": "3a0cb9e3f68a45db168583e36b09d75475a98819a2605ebe142f622dfc79ba88",

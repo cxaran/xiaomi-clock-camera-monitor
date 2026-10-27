@@ -99,7 +99,7 @@ public final class StockBootstrap {
             if (!source.isFile() || source.length() != BuildPins.OWN_APK_BYTES
                     || !BuildPins.OWN_APK_SHA.equals(hash(source))) return false;
             PackageInfo signing = pm.getPackageInfo("org.x04g.home", PackageManager.GET_SIGNING_CERTIFICATES);
-            if (signing.getLongVersionCode() != 1 || !"0.1.0-candidate".equals(signing.versionName)
+            if (!companionVersionMatches(signing)
                     || !signerMatches(signing, BuildPins.OWN_SIGNER_SHA)) return false;
             // Fail closed if an update changed the active path during the file/hash checks.
             File after = new File(pm.getApplicationInfo("org.x04g.home", 0).sourceDir).getCanonicalFile();
@@ -124,6 +124,11 @@ public final class StockBootstrap {
 
     private static boolean oemVersionMatches(PackageInfo info) {
         return info.getLongVersionCode() == OEM_VERSION_CODE && OEM_VERSION_NAME.equals(info.versionName);
+    }
+
+    static boolean companionVersionMatches(PackageInfo info) {
+        return info != null && info.getLongVersionCode() == BuildPins.OWN_VERSION_CODE
+                && BuildPins.OWN_VERSION_NAME.equals(info.versionName);
     }
 
     private static boolean signerMatches(PackageInfo info, String expected) throws Exception {

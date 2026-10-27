@@ -70,3 +70,23 @@ adb -H 127.0.0.1 -P 5102 -s emulator-5602 shell am clear-debug-app
 El reinicio del proceso elimina el código cargado temporalmente. Esta vía sirve
 para diseñar y revisar la UI; la instalación persistente en hardware utiliza
 [la pareja APK/módulo y su UID comprobado](../../docs/carousel.md).
+
+## Comprobar el puente Java real
+
+El adaptador visual carga sólo el código del APK. Como ese APK no contiene
+`StockBootstrap`, no ejercita los controles de versión y firma del módulo
+persistente. Una captura correcta por esta vía no valida esos controles.
+
+`verify_bridge.py` carga el `payload.dex` del ZIP real en un proceso OEM fresco
+y llama a `StockBootstrap.start(uid)` sin modificar sus flags ni instalar el
+carrusel directamente. Requiere los hashes explícitos del APK y ZIP:
+
+```bash
+python3 emulator/lab/verify_bridge.py --session /ruta/session.json \
+  --apk-sha256 HASH_APK --module-sha256 HASH_ZIP --timeout-seconds 300
+```
+
+El recibo distingue los pins, la verificación del puente y la inserción del
+carrusel. Los flags de identidad correctos sin `INSTALLED` son un resultado
+parcial. Un timeout de lectura tampoco acredita la inserción. Esta prueba no
+ejecuta el enganche nativo de Zygisk ni sustituye la instalación física.

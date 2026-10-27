@@ -6,6 +6,7 @@ import json
 import re
 import struct
 import subprocess
+import sys
 import zipfile
 import zlib
 
@@ -81,6 +82,13 @@ def main():
     require(len(native) >= 52 and native[:6] == b'\x7fELF\x01\x01'
             and struct.unpack_from('<H', native, 18)[0] == 40, args.module.name, 'arm32_elf_required')
     provenance = json.loads(module['provenance.json'])
+    sys.path.insert(0, str(ROOT / 'integration'))
+    from build_module import apk_identity
+    identity = apk_identity(args.apk)
+    for key, expected in [('apk_package', identity['package']),
+                          ('apk_version_code', identity['version_code']),
+                          ('apk_version_name', identity['version_name'])]:
+        require(provenance.get(key) == expected, args.module.name, 'pair_' + key)
     for key, expected in [('apk_sha256', sha(args.apk)), ('apk_bytes', args.apk.stat().st_size),
                           ('payload_sha256', hashlib.sha256(module['payload.dex']).hexdigest()),
                           ('native_sha256', hashlib.sha256(native).hexdigest())]:
